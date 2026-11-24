@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analiza rolek Wybiegaj w Przyszłość</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* układ: ciemny panel analityczny; karty jako moduły na siatce, liczby krojem o stałej szerokości, jeden koralowy akcent */
+  color-scheme:dark;
+  --bg:#0A0E13; --surface:#121820; --ink:#E8EEF4; --muted:#8C99A8; --line:#222C38; --accent:#E0623C;
+  --win:#E0623C; --strong:#3F8FE0; --other:#5F6C7B;
+  --good:#3FB97F; --warn:#E3B341; --crit:#F0625A; --tint:#19212B;
+  --hero:#0A0E13; --hero-ink:#E8EEF4; --hero-muted:#8C99A8; --hero-accent:#E0623C;
+  --shadow:0 0 0 1px rgba(255,255,255,.02),0 24px 48px -32px rgba(0,0,0,.9);
+  --display:"Sora","Segoe UI",Arial,sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.08;margin:0;text-wrap:balance;letter-spacing:.005em}
+h1{font-size:clamp(34px,6vw,54px);text-transform:uppercase}
+h2{font-size:30px;text-transform:uppercase}
+h3{font-size:22px}
+p{margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header.top{padding:44px 0 52px;background:var(--hero);color:var(--hero-ink);position:relative;overflow:hidden}
+header.top::after{content:"";position:absolute;inset:auto 0 0 0;height:26px;background:repeating-linear-gradient(90deg,transparent 0 118px,rgba(255,255,255,.14) 118px 120px);opacity:.7;pointer-events:none}
+header.top .wrap{position:relative;z-index:1}
+.eyebrow{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+header.top .eyebrow{color:var(--hero-accent)}
+header.top h1{max-width:28ch;margin-top:8px}
+.lede{max-width:64ch;color:var(--hero-muted);margin-top:14px;font-size:17px}
+.deadline{display:inline-flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;margin-top:22px;padding:12px 18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px}
+.deadline b{font-family:var(--display);font-size:28px;font-variant-numeric:tabular-nums;color:var(--hero-accent)}
+.deadline span{color:var(--hero-muted);font-size:14px}
+
+nav.lanes{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 6px 18px -14px rgba(16,32,28,.35)}
+nav.lanes .wrap{display:flex;gap:2px;overflow-x:auto}
+nav.lanes button{flex:0 0 auto;display:flex;align-items:baseline;gap:8px;padding:15px 16px 12px;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:600 15px var(--body);cursor:pointer;transition:color .15s}
+nav.lanes button i{font:700 19px var(--display);font-style:normal;color:var(--other)}
+nav.lanes button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.lanes button[aria-selected="true"] i{color:var(--accent)}
+nav.lanes button:hover{color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+main{padding:36px 0 80px;overflow-x:clip}
+section.view{display:none;flex-direction:column;gap:28px}
+section.view.on{display:flex}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:var(--shadow)}
+.card>h3{font-weight:600;font-size:23px}
+.explain{margin-top:18px;padding:14px 16px;background:var(--tint);border-radius:10px;font-size:14.5px;line-height:1.55;max-width:none}
+.explain b{display:block;font:600 13px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.grid{display:grid;gap:22px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.sub{color:var(--muted);font-size:14px;margin-top:4px;max-width:70ch}
+.src{color:var(--muted);font-size:12.5px;margin-top:12px}
+
+.verdict{border-left:4px solid var(--accent)}
+.verdict p{max-width:68ch;margin-top:8px}
+.tile{border-top:3px solid var(--accent)}
+.tile b{display:block;font:700 50px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--accent)}
+.tile span{display:block;color:var(--muted);font-size:14px;margin-top:6px}
+
+.finding{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;padding:18px 0;border-top:1px solid var(--line)}
+.finding:first-of-type{border-top:0;padding-top:4px}
+.finding .num{font:700 34px/1 var(--display);color:var(--other);grid-row:span 3;min-width:34px}
+.finding p{max-width:68ch}
+.finding .do{color:var(--ink);background:var(--tint);border-radius:6px;padding:8px 12px;margin-top:6px;font-size:15px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;border:1px solid currentColor;white-space:nowrap;vertical-align:middle}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.mocne{color:var(--good)} .pill.srednie{color:var(--warn)} .pill.slabe{color:var(--muted)}
+.pill.W{color:var(--win)} .pill.S{color:var(--strong)} .pill.M{color:var(--muted)}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.bars{display:grid;gap:10px;margin-top:16px}
+.bar-row{display:grid;grid-template-columns:118px 1fr 78px;gap:10px;align-items:center;font-size:14px}
+.bar-row .track{height:18px;background:var(--tint);border-radius:4px;position:relative}
+.bar-row .fill{position:absolute;inset:0 auto 0 0;border-radius:4px;min-width:2px}
+.bar-row .val{font-variant-numeric:tabular-nums;text-align:right;color:var(--muted)}
+.bar-row .val b{color:var(--ink)}
+.bar-row[title]{cursor:default}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;color:var(--muted);font-weight:600;font-size:12px;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+tbody tr:hover td{background:var(--tint)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.cellbar{display:flex;align-items:center;gap:8px;min-width:120px}
+.cellbar .track{flex:1;height:10px;background:var(--tint);border-radius:3px;position:relative}
+.cellbar .fill{position:absolute;inset:0 auto 0 0;border-radius:3px}
+.cellbar b{font-variant-numeric:tabular-nums;font-weight:600;min-width:34px}
+.feat small{display:block;color:var(--muted);font-size:12.5px}
+
+svg text{font-family:var(--body);fill:var(--muted);font-size:12px}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 9px;border-radius:5px;max-width:260px;z-index:20;display:none}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.chip{transition:background .15s,color .15s;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font:500 14px var(--body);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.vid{display:grid;gap:8px}
+.vid header{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.vid h3{font-size:22px}
+.vid .meta{display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--muted);font-size:13.5px;font-variant-numeric:tabular-nums}
+.vid .tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;border-radius:4px;padding:2px 8px;background:var(--tint);color:var(--ink)}
+.tag.off{background:none;border:1px dashed var(--line);color:var(--muted);text-decoration:line-through}
+
+label{font-weight:600;font-size:14px;display:block;margin-bottom:6px}
+textarea,select,input[type=number]{width:100%;font:15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+textarea{min-height:230px;resize:vertical;line-height:1.5}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.btn{background:var(--accent);color:var(--surface);border:0;border-radius:8px;padding:11px 18px;font:600 15px var(--body);cursor:pointer}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent)}
+.score{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px}
+.score b{font:700 60px/1 var(--display);font-variant-numeric:tabular-nums}
+.meter{height:10px;background:var(--tint);border-radius:5px;position:relative;margin-top:10px}
+.meter i{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--accent)}
+.check{display:grid;grid-template-columns:22px 1fr;gap:4px 10px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.check .ic{font-weight:700}
+.check.ok .ic{color:var(--good)} .check.no .ic{color:var(--crit)} .check.mid .ic{color:var(--warn)}
+.check small{grid-column:2;color:var(--muted);font-size:13px}
+.gate{padding:12px 14px;border-radius:6px;border:1px solid var(--line);border-left-width:4px;margin-top:14px;font-size:15px}
+.gate.ok{border-left-color:var(--good)} .gate.no{border-left-color:var(--crit)} .gate.mid{border-left-color:var(--warn)}
+
+.beat{display:grid;grid-template-columns:92px 1fr;gap:4px 16px;padding:14px 0;border-top:1px solid var(--line)}
+.beat:first-of-type{border-top:0}
+.beat .t{font:700 22px/1.1 var(--display);font-variant-numeric:tabular-nums;color:var(--accent)}
+.beat p{max-width:66ch}
+.beat .why{color:var(--muted);font-size:13.5px}
+ul.plain{margin:8px 0 0;padding-left:20px;max-width:70ch}
+ul.plain li{margin:5px 0}
+
+.concl{border-left:5px solid var(--accent);padding:30px 30px 30px 28px}
+.concl h2{font-size:clamp(26px,3.6vw,36px);text-transform:none;max-width:32ch;margin-top:6px}
+.concl p{max-width:68ch;margin-top:10px}
+.step{display:flex;align-items:center;gap:16px;margin-top:22px}
+.step::after{content:"";flex:1;height:1px;background:var(--line)}
+.step h2{font-size:32px}
+.step span{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--surface);font:700 26px/46px var(--display);text-align:center}
+.units{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;max-width:340px}
+.units i{width:30px;height:30px;border-radius:5px;display:block}
+.units.small{gap:3px;max-width:none}.units.small i{width:15px;height:15px;border-radius:3px}
+.legend.col{flex-direction:column;gap:6px;margin-top:14px}
+.legend b{color:var(--ink);font-variant-numeric:tabular-nums}
+.t3{background:var(--accent)}.t2{background:color-mix(in srgb,var(--accent) 55%,var(--surface))}.t1{background:color-mix(in srgb,var(--accent) 24%,var(--surface))}
+.t0{background:var(--tint)}
+.big{font:700 52px/1 var(--display);margin-top:10px;font-variant-numeric:tabular-nums}
+.matrix td,.matrix th{vertical-align:middle;white-space:nowrap}
+.matrix th.c,.matrix td.c{text-align:center}
+.matrix thead th{white-space:normal;max-width:92px;line-height:1.25}
+.dotc{width:16px;height:16px;border-radius:50%;display:inline-block;border:2px solid var(--other)}
+.dotc.on{background:var(--win);border-color:var(--win)}
+.lenbar{position:relative;width:170px;height:14px;background:var(--tint);border-radius:4px;display:inline-block;vertical-align:middle}
+.lenbar i{position:absolute;inset:0 auto 0 0;border-radius:4px;background:var(--win)}
+.lenbar i.over{background:var(--warn)}
+.lenbar u{position:absolute;top:-4px;bottom:-4px;left:60%;width:2px;background:var(--ink)}
+.matrix .t{font-variant-numeric:tabular-nums;display:inline-block;min-width:42px}
+.matrix small{color:var(--warn);font-weight:600}
+.bars.tight .bar-row{grid-template-columns:96px 1fr 58px;font-size:13px}
+.crit{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:6px 18px;padding:14px 0;border-top:1px solid var(--line);align-items:center}
+.crit:first-child{border-top:0;padding-top:0}
+.crit h4{margin:0;font:700 20px/1.1 var(--display)}
+.crit small{color:var(--muted);font-size:13px;display:block}
+.crit .pair{display:grid;gap:6px}
+.crit .free{grid-column:1/-1;font-size:13.5px;color:var(--warn);font-weight:600}
+ol.todo{margin:12px 0 0;padding:0;list-style:none;counter-reset:t;display:grid;gap:12px;max-width:74ch}
+ol.todo li{counter-increment:t;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+ol.todo li::before{content:counter(t);font:700 26px/1 var(--display);color:var(--accent)}
+ol.todo b{display:block}
+details.card summary{cursor:pointer}
+@media (max-width:520px){.crit{grid-template-columns:1fr}.lenbar{width:110px}}
+@media (max-width:520px){
+  .bar-row{grid-template-columns:84px 1fr 64px}
+  .beat{grid-template-columns:1fr}
+  .finding{grid-template-columns:1fr}.finding .num{grid-row:auto}
+}
+
+/* ---------- szata: ciemny panel analityczny ---------- */
+body{font-size:16px;background:
+  radial-gradient(900px 420px at 85% -10%,rgba(224,98,60,.14),transparent 70%),
+  radial-gradient(700px 380px at 0% 0%,rgba(63,143,224,.10),transparent 70%),var(--bg);background-attachment:fixed}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;text-transform:none}
+h1{font-size:clamp(34px,5.4vw,58px);line-height:1.05;text-transform:none}
+h1 em{font-style:normal;color:var(--accent)}
+h2{font-size:27px}
+h3,.card>h3{font-size:19px;font-weight:600}
+header.top{padding:52px 0 36px;background:none}
+header.top::after{display:none}
+.eyebrow{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.16em;color:var(--accent)}
+.lede{font-size:17px}
+.deadline{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 18px;box-shadow:none}
+.deadline b{font-family:var(--mono);font-weight:700;font-size:22px;color:var(--accent)}
+nav.lanes{background:rgba(10,14,19,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);box-shadow:none;padding:10px 0}
+nav.lanes .wrap{gap:6px}
+nav.lanes button{font:600 14px var(--body);border:1px solid transparent;border-radius:10px;padding:9px 14px;color:var(--muted)}
+nav.lanes button i{font:500 12px var(--mono);color:var(--other)}
+nav.lanes button:hover{background:var(--tint)}
+nav.lanes button[aria-selected="true"]{background:var(--tint);border-color:var(--line);color:var(--ink)}
+nav.lanes button[aria-selected="true"] i{color:var(--accent)}
+.card{border-radius:16px;border:1px solid var(--line);padding:26px;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 120px),var(--surface)}
+.grid{gap:20px}
+.tile{border-top:1px solid var(--line)}
+.tile b{font:700 46px/1 var(--mono);color:var(--ink);letter-spacing:-.03em}
+#tiles .tile:nth-child(1) b{color:var(--accent)}
+.concl{border:1px solid rgba(224,98,60,.45);background:linear-gradient(135deg,rgba(224,98,60,.16),transparent 55%),var(--surface);padding:34px}
+.concl h2{font-size:clamp(25px,3.4vw,35px);line-height:1.18;max-width:30ch;color:var(--ink)}
+.step{margin-top:26px}
+.step::after{content:"";display:block;flex:1;height:1px;background:var(--line)}
+.step h2,.step.s1 h2,.step.s2 h2,.step.s3 h2,.step.s4 h2{font-size:27px;color:var(--ink)}
+.step span,.step.s1 span,.step.s2 span,.step.s3 span,.step.s4 span{width:auto;height:auto;padding:6px 10px;border-radius:8px;background:rgba(224,98,60,.16);color:var(--accent);font:700 14px/1 var(--mono)}
+.step span::before{content:"0"}
+section.view>.card>h2,#v-filmy .card>h2,#v-sprawdz .card>h2,#v-plan .card>h2{color:var(--ink)}
+.explain{background:var(--tint);border-radius:12px;border-left:3px solid var(--accent);color:var(--ink)}
+.explain b{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.14em;color:var(--accent)}
+.units i{border-radius:6px}.units.small i{border-radius:3px}
+.t2{background:color-mix(in srgb,var(--accent) 50%,var(--surface))}.t1{background:color-mix(in srgb,var(--accent) 22%,var(--surface))}.t0{background:#1C2530}
+.bar-row .track,.cellbar .track,.lenbar,.meter{border-radius:6px;background:#1C2530}
+.bar-row .fill,.cellbar .fill,.lenbar i,.meter i{border-radius:6px}
+.lenbar u{background:var(--ink)}
+.bar-row .val,.cellbar b,.matrix .t,td.num{font-family:var(--mono);font-size:13px}
+.big{font:700 50px/1 var(--mono);color:var(--accent);letter-spacing:-.03em}
+.finding .num{font:700 22px/1.4 var(--mono);color:var(--accent)}
+.finding .do,.gate{border-radius:12px}
+.dotc{border-color:#3A4757}
+.chip{border-radius:10px;background:var(--surface);font-family:var(--body);font-weight:600}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#0A0E13}
+.tag{border-radius:6px;background:var(--tint)}
+.btn{border-radius:10px;background:var(--accent);color:#0A0E13;font-family:var(--body);font-weight:700;text-transform:none;letter-spacing:0;padding:11px 18px}
+.btn.ghost{background:none;color:var(--accent);border-color:rgba(224,98,60,.6)}
+textarea,select,input[type=number]{border-radius:10px;background:var(--bg)}
+thead th{letter-spacing:.1em;font-family:var(--mono);font-weight:500;font-size:11px}
+tbody tr:hover td{background:var(--tint)}
+.beat .t{font:700 16px/1.5 var(--mono);color:var(--accent)}
+ol.todo li::before{content:"0" counter(t);font:700 18px/1.5 var(--mono);color:var(--accent)}
+.crit h4{font:600 18px/1.2 var(--display)}
+.score b{font:700 64px/1 var(--mono);color:var(--accent)}
+a{color:#7FB4F0}
+.tip{background:#E8EEF4;color:#0A0E13;border-radius:8px}
+details.card summary{list-style:none}details.card summary::before{content:"+ ";font:700 22px var(--mono);color:var(--accent)}details[open].card summary::before{content:"– "}
+
+/* ---------- telefon ---------- */
+.mcards{display:none}
+@media (max-width:680px){
+  body{font-size:15.5px}
+  .wrap{padding:0 16px}
+  header.top{padding:30px 0 22px}
+  h1{font-size:32px}
+  .lede{font-size:15.5px}
+  .deadline{display:flex;padding:12px 14px}
+  nav.lanes{padding:8px 0}
+  nav.lanes .wrap{padding-right:16px;scrollbar-width:none}
+  nav.lanes .wrap::-webkit-scrollbar{display:none}
+  nav.lanes button{padding:9px 12px;font-size:14px}
+  main{padding:20px 0 56px}
+  section.view{gap:16px}
+  .grid{gap:14px}
+  .card{padding:18px;border-radius:14px}
+  .concl{padding:22px 20px}
+  .concl h2{font-size:23px}
+  h2{font-size:22px}
+  h3,.card>h3{font-size:17.5px}
+  #tiles{grid-template-columns:1fr 1fr;gap:10px}
+  .tile{padding:14px}
+  .tile b{font-size:34px}
+  .tile span{font-size:12.5px;line-height:1.4}
+  .step{gap:10px;margin-top:14px}
+  .step::after{display:none}
+  .step h2,.step.s1 h2,.step.s2 h2,.step.s3 h2,.step.s4 h2{font-size:21px}
+  .big{font-size:40px}
+  .explain{padding:12px 14px;font-size:14px}
+  .units{gap:5px}.units i{width:26px;height:26px}
+  .units.small i{width:13px;height:13px}
+  .bar-row{grid-template-columns:86px 1fr auto;gap:8px;font-size:13px}
+  .bar-row .val{white-space:nowrap}
+  .bars.tight .bar-row{grid-template-columns:96px 1fr auto}
+  .filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .filters::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto}
+  #vid-list{grid-template-columns:minmax(0,1fr)}
+  .vid{min-width:0}.vid p,.vid .meta{overflow-wrap:anywhere}
+  textarea,select,input[type=number]{font-size:16px}
+  .btn{flex:1 1 auto;text-align:center}
+  .score b{font-size:52px}
+  .crit{grid-template-columns:1fr;gap:8px}
+  .beat{grid-template-columns:1fr}
+  ol.todo li{grid-template-columns:30px 1fr;gap:8px}
+  .finding{grid-template-columns:1fr}.finding .num{grid-row:auto}
+  /* tabele jako karty */
+  table.stack thead{display:none}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack tr{border-top:1px solid var(--line);padding:10px 0}
+  table.stack tr:first-child{border-top:0}
+  table.stack td{border:0;padding:3px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:right}
+  table.stack td::before{content:attr(data-label);color:var(--muted);font-size:12.5px;text-align:left;flex:0 0 44%}
+  table.stack td:first-child{display:block;text-align:left;font-weight:600;font-size:15px;padding-bottom:6px}
+  table.stack td:first-child::before{display:none}
+  table.stack .cellbar{min-width:0;flex:1}
+  tbody tr:hover td{background:none}
+  /* macierz rolek jako karty */
+  .mtable{display:none}
+  .mcards{display:grid;gap:10px;margin-top:14px}
+  .mcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:8px;background:var(--tint)}
+  .mcard .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .mcard .hd b{font-size:15px}
+  .mcard .hd span{font-family:var(--mono,inherit);font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .mcard .ln{display:flex;align-items:center;gap:10px}
+  .mcard .ln .lenbar{flex:1;width:auto}
+  .mcard .ln small{color:var(--warn);font-weight:600;white-space:nowrap}
+  .mcard .tags{display:flex;flex-wrap:wrap;gap:5px}
+  .mcard .tag{background:color-mix(in srgb,var(--win) 24%,transparent);font-size:11.5px}
+  .mcard .tag.off{background:none}
+  .msum{font-size:13px;color:var(--muted)}
+}
+@media (prefers-reduced-motion:no-preference){.fill,.meter i{transition:width .35s ease}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">Stypendium Wybiegaj w Przyszłość · VI edycja 2027</div>
+  <h1>Co łączy <em>zwycięzców</em>, a czego zabrakło reszcie</h1>
+  <p class="lede">Analiza 71 przyznanych stypendiów z pięciu edycji i 36 publicznych filmów zgłoszeniowych: 13 od osób, które stypendium dostały, w tym 10 z 18 stypendystów V edycji, i 23 od osób, których nie ma na listach.</p>
+  <div class="deadline"><b id="cd">…</b><span>do końca naboru: 7 grudnia 2026, 23:59. Wyniki do 31 stycznia 2027. Co najmniej 15 stypendiów.</span></div>
+</div></header>
+
+<nav class="lanes" aria-label="Sekcje"><div class="wrap" role="tablist">
+  <button role="tab" data-v="wnioski"><i>1</i>Wnioski</button>
+  <button role="tab" data-v="stypendysci"><i>2</i>Stypendyści</button>
+  <button role="tab" data-v="filmy"><i>3</i>Filmy</button>
+  <button role="tab" data-v="sprawdz"><i>4</i>Sprawdź swój scenariusz</button>
+  <button role="tab" data-v="plan"><i>5</i>Plan rolki</button>
+</div></nav>
+
+<main><div class="wrap">
+
+<section class="view" id="v-wnioski">
+  <div class="card concl">
+    <div class="eyebrow">Wniosek z danych</div>
+    <h2>Stypendium wygrywa wynik sportowy. Rolka ma go pokazać liczbą i dopowiedzieć to, czego nie widać w tabeli wyników.</h2>
+    <p>Żadna forma rolki nie wygrywa sama: w V edycji stypendium dostały film z operatorem, montaż z telefonu i film o 77 sekund za długi. Rolki kandydatów spoza listy bywają zrobione równie dobrze. Dlatego czas warto włożyć w treść, a nie w efekty.</p>
+  </div>
+  <div class="grid g3" id="tiles"></div>
+
+  <div class="step s1"><span>1</span><h2>Najpierw wynik sportowy</h2></div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>18 stypendystów V edycji według poziomu</h3>
+      <p class="sub">Jeden kwadrat to jedna osoba. Najedź, żeby zobaczyć nazwisko.</p>
+      <div class="units" id="u-level"></div>
+      <div class="legend col" id="u-level-leg"></div>
+      <p class="explain"><b>Co to znaczy</b>Dziesięć z osiemnastu osób łączy tytuł mistrza Polski ze startem na imprezie międzynarodowej, a kolejnych siedem ma jedno z dwojga. Tylko jedna osoba dostała stypendium z samym medalem. Bez wyniku z tej półki szanse są małe niezależnie od rolki.</p>
+    </div>
+    <div class="card">
+      <h3>116 zgłoszeń, 12 stypendiów</h3>
+      <p class="sub">III edycja, ostatnia z podaną liczbą zgłoszeń. Jeden kwadrat to jedno zgłoszenie.</p>
+      <div class="units small" id="u-waffle"></div>
+      <p class="explain"><b>Co to znaczy</b>Stypendium dostało mniej więcej co dziesiąte zgłoszenie, a w I edycji co osiemnaste. W zebranej próbie odrzucani byli też mistrzowie Polski, więc o miejsce walczy się w gronie zawodników o podobnych wynikach.</p>
+      <p class="src">W I edycji było 141 zgłoszeń na 8 miejsc (według wpisu 1mila.pl, którego strona już nie działa). Dla IV i V edycji fundacja podaje tylko, że zgłoszeń były setki.</p>
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Poprzeczka rośnie z każdą edycją</h3>
+      <p class="sub">Udział stypendystów ze startem lub medalem międzynarodowym.</p>
+      <div class="bars" id="chart-intl2"></div>
+      <p class="explain"><b>Co to znaczy</b>W pierwszej edycji nikt nie miał startu międzynarodowego, w piątej miało go 13 z 18 osób. Wynik, który wystarczał trzy lata temu, dziś jest poniżej typowego poziomu stypendysty.</p>
+    </div>
+    <div class="card">
+      <h3>Część miejsc jest zajęta, zanim ruszy nabór</h3>
+      <p class="sub">18 stypendystów V edycji: kto był w programie wcześniej, a kto debiutował.</p>
+      <div class="units" id="u-ret"></div>
+      <div class="legend col" id="u-ret-leg"></div>
+      <p class="explain"><b>Co to znaczy</b>Siedem z osiemnastu miejsc dostały osoby, które fundacja już znała. Dla debiutanta realna pula to około jedenastu stypendiów. Powracający muszą pokazać postęp względem poprzedniego roku, bo tak fundacja uzasadniała ponowne stypendia.</p>
+    </div>
+  </div>
+
+  <div class="step s2"><span>2</span><h2>Zwycięskie rolki nie mają jednej formy</h2></div>
+  <div class="card">
+    <h3>10 rolek zwycięzców V edycji obok siebie</h3>
+    <p class="sub">Pełne kółko oznacza, że element jest w rolce. Pionowa kreska na pasku długości to limit 2 minut.</p>
+    <div class="scroll mtable" style="margin-top:12px"><table class="matrix" id="matrix"><thead></thead><tbody></tbody></table></div>
+    <div class="mcards" id="mcards"></div>
+      <p class="explain"><b>Co to znaczy</b>Czytane wierszami: żadne dwa wiersze nie są takie same, a wszystkie te rolki wygrały. Czytane kolumnami: prawie każda rolka ma ujęcia z zawodów, ponad połowa pokazuje nazwę lub logo programu, a napisy i archiwalia to rzadkość. Polubienia nie układają się w żaden wzór z resztą tabeli.</p>
+  </div>
+
+  <div class="step s3"><span>3</span><h2>Trzy rzeczy, które nie rozstrzygają</h2></div>
+  <div class="grid g3">
+    <div class="card"><h3>Długość</h3><p class="big" id="m-len"></p><p class="sub">zwycięskich rolek V edycji przekracza limit 2 minut.</p><div id="s-len"></div>
+      <p class="explain"><b>Co to znaczy</b>Większość zwycięskich rolek trwa od minuty do dwóch, ale trzy są dłuższe i też wygrały. Limit jest w formularzu, więc warto go trzymać, tylko to nie on decyduje.</p></div>
+    <div class="card"><h3>Polubienia</h3><p class="big" id="m-like"></p><p class="sub">zwycięskich rolek ma mniej polubień niż każda z czterech rolek spoza listy.</p><div id="s-like"></div>
+      <p class="explain"><b>Co to znaczy</b>Skala jest logarytmiczna, czyli każda kreska oznacza dziesięć razy więcej. Zwycięzcy są rozrzuceni od 172 do 5789 polubień, a rolki spoza listy leżą w środku tego zakresu. Zasięg zależy od wielkości konta, nie od jakości zgłoszenia.</p></div>
+    <div class="card"><h3>Montaż</h3><p class="big" id="m-edit"></p><p class="sub">obejrzane rolki spoza listy mają logo programu, mówienie do kamery i ujęcia z zawodów, tak jak zwycięskie.</p><div class="bars tight" id="s-edit"></div>
+      <p class="explain"><b>Co to znaczy</b>Dobra realizacja jest potrzebna, żeby nie odstawać, ale nie jest powodem, dla którego ktoś wygrywa. Próba spoza listy to tylko dwie rolki, więc to wskazówka, a nie pomiar.</p></div>
+  </div>
+
+  <div class="step s4"><span>4</span><h2>Wolne pole: kryteria, o których prawie nikt nie mówi</h2></div>
+  <div class="card">
+    <h3>Cztery oficjalne kryteria a treść filmów</h3>
+    <p class="sub">Ile filmów ze znaną treścią mówi o danym kryterium. Koralowy pasek to zwycięzcy, niebieski to mistrzowie Polski i reprezentanci bez stypendium.</p>
+    <div id="crit" style="margin-top:14px"></div>
+      <p class="explain"><b>Co to znaczy</b>Dwa górne kryteria są w filmach obecne: zwycięzcy zawsze podają wynik z miarą i zwykle zwracają się do fundacji. Dwa dolne prawie nie padają w żadnej grupie, choć rada ocenia je na równi z pozostałymi. To najtańsze miejsce, żeby się odróżnić, przy czym dane nie dowodzą, że to przesądza.</p>
+  </div>
+
+  <div class="card concl">
+    <div class="eyebrow">Co z tego wynika dla waszej rolki</div>
+    <ol class="todo" id="todo"></ol>
+  </div>
+
+  <details class="card"><summary><h2 style="display:inline">Osiem ustaleń ze szczegółami</h2></summary>
+    <p class="sub">Przy każdym ustaleniu jest ocena siły dowodów.</p>
+    <div id="findings" style="margin-top:14px"></div>
+  </details>
+  <div class="card">
+    <h2>Czego ta analiza nie wie</h2>
+    <ul class="plain">
+      <li>Fundacja nie publikuje listy odrzuconych ani wag kryteriów. Grupa bez stypendium to osoby, które opublikowały film zgłoszeniowy i nie ma ich na liście danej edycji.</li>
+      <li>Rolek zwycięzców jest 13, w tym 10 z 18 stypendystów V edycji. Pozostałych ośmioro nie ma rolki, którą dało się potwierdzić jako zgłoszeniową.</li>
+      <li>Pełną treść mówioną znam dla 5 filmów zwycięzców: 2 z YouTube i 3 z Instagrama z napisami w obrazie. Pozostałe rolki oceniłem tylko z obrazu, bez dźwięku.</li>
+      <li>Z rolek kandydatów spoza listy na Instagramie obejrzałem 2 z 5. Z około 1060 postów z oznaczeniem fundacji przejrzałem 444.</li>
+      <li>Nie widać świadectw ani oświadczeń o dochodach, czyli dwóch z czterech kryteriów. Odrzucenie mocnego sportowo kandydata mogło wynikać właśnie z nich.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="view" id="v-stypendysci">
+  <div class="card">
+    <h2>Poprzeczka sportowa rośnie</h2>
+    <p class="sub">Udział stypendystów, których opis osiągnięć zawiera start lub medal na imprezie międzynarodowej.</p>
+    <div class="bars" id="chart-intl"></div>
+      <p class="explain"><b>Co to znaczy</b>Udział stypendystów z doświadczeniem międzynarodowym wzrósł od zera w I edycji do 13 z 18 w V. Fundacja wybiera coraz mocniejszych sportowo kandydatów.</p>
+    <p class="src">Źródło: opisy stypendystów na stronie fundacji (edycje I do IV) i komunikat prasowy fundacji w bieganie.pl (edycja V). Kodowanie własne.</p>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h2>Tytuł, rekord albo reprezentacja</h2>
+      <p class="sub">Udział stypendystów z co najmniej jednym: mistrzostwo Polski, rekord Polski, start międzynarodowy.</p>
+      <div class="bars" id="chart-any"></div>
+      <p class="explain"><b>Co to znaczy</b>W każdej edycji co najmniej trzy czwarte stypendystów miało tytuł mistrza Polski, rekord Polski albo start międzynarodowy. W piątej było to 17 z 18 osób.</p>
+    </div>
+    <div class="card">
+      <h2>Miejsca dla powracających</h2>
+      <p class="sub">Udział stypendystów, którzy byli w programie już wcześniej.</p>
+      <div class="bars" id="chart-ret"></div>
+      <p class="explain"><b>Co to znaczy</b>Udział powracających rośnie od II edycji i w dwóch ostatnich wynosi około 40 procent. Kto raz wszedł do programu i robi postęp, ma dużą szansę zostać.</p>
+      <p class="src" id="ret-note"></p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Wszystkie przyznane stypendia</h2>
+    <div class="filters" id="ed-filter" style="margin:12px 0"></div>
+    <div class="scroll"><table id="win-table" class="stack"><thead><tr><th>Stypendysta</th><th>Edycja</th><th>Który raz</th><th>Mistrz Polski</th><th>Rekord Polski</th><th>Start międzynarodowy</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section class="view" id="v-filmy">
+  <div class="card">
+    <h2>Co widać w rolkach zwycięzców V edycji</h2>
+    <p class="sub">10 rolek z Instagrama obejrzanych klatka po klatce. Obok dwie rolki kandydatów spoza listy z tej samej edycji.</p>
+    <div class="scroll" style="margin-top:12px"><table id="vis-table" class="stack"><thead></thead><tbody></tbody></table></div>
+      <p class="explain"><b>Co to znaczy</b>Zwycięskie rolki najczęściej pokazują starty i nazwę programu, a co druga pokazuje mówiącego zawodnika. Obie rolki spoza listy mają te same elementy, więc sama forma nie tłumaczy, kto dostał stypendium.</p>
+  </div>
+  <div class="card">
+    <h2>Co pada w filmach, w trzech grupach</h2>
+    <p class="sub">Ile filmów ze znaną treścią mówioną zawiera dany element. Przy tak małych grupach to obraz, a nie statystyka.</p>
+    <div class="legend"><span><i class="sw" style="background:var(--win)"></i>Stypendium przyznane</span><span><i class="sw" style="background:var(--strong)"></i>Bez stypendium mimo tytułu MP lub reprezentacji</span><span><i class="sw" style="background:var(--other)"></i>Bez stypendium, niższy poziom sportowy</span></div>
+    <div class="scroll" style="margin-top:12px"><table id="feat-table" class="stack"><thead></thead><tbody></tbody></table></div>
+      <p class="explain"><b>Co to znaczy</b>Trzy grupy różnią się mniej, niż można by oczekiwać. Zwycięzcy wyróżniają się w dwóch wierszach: wynik z kontekstem i zwrot do fundacji. O sytuacji i nauce mówi mniejszość w każdej grupie. Przy grupach po 5, 8 i 10 filmów różnica jednego filmu zmienia obraz, więc to orientacja, a nie statystyka.</p>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h2>Długość filmu</h2>
+      <p class="sub">Każda kropka to jeden film o znanej długości. Linia oznacza limit 2 minut z formularza.</p>
+      <div id="chart-len" style="margin-top:8px"></div>
+      <p class="explain"><b>Co to znaczy</b>Filmy dłuższe niż 2 minuty są w każdej z trzech grup, także wśród stypendystów. Najwięcej filmów skupia się tuż przed limitem.</p>
+    </div>
+    <div class="card">
+      <h2>Rolki zgłoszeniowe z Instagrama, V edycja</h2>
+      <p class="sub">Polubienia pod rolką. Dziesięcioro zwycięzców i czworo kandydatów spoza listy.</p>
+      <div class="bars" id="chart-ig"></div>
+      <p class="explain"><b>Co to znaczy</b>Dwie rolki z największych kont odstają od reszty. Pozostali zwycięzcy mają tyle samo lub mniej polubień niż osoby spoza listy.</p>
+      <p class="src">Kolor koralowy to stypendium przyznane, szary to brak na liście. Zasięg zależy głównie od wielkości konta.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Baza filmów</h2>
+    <p class="sub">Osoby bez stypendium są podpisane imieniem i inicjałem, bo część nagrań zrobili niepełnoletni. Link prowadzi do publicznego filmu.</p>
+    <div class="filters" id="vid-filter" style="margin:12px 0"></div>
+    <div class="grid" id="vid-list"></div>
+  </div>
+</section>
+
+<section class="view" id="v-sprawdz">
+  <div class="card">
+    <h2>Krok 1. Próg formalny</h2>
+    <p class="sub">Regulamin VI edycji wymaga lokaty z ostatnich dwóch lat. Bez niej wniosek nie jest rozpatrywany.</p>
+    <div class="form-grid" style="margin-top:14px">
+      <div><label for="g-year">Rok urodzenia</label><select id="g-year"><option>2005</option><option>2006</option><option>2007</option><option selected>2008</option><option>2009</option><option>2010</option><option>2011</option></select></div>
+      <div><label for="g-mp">Najlepsze miejsce na mistrzostwach Polski PZLA</label><input type="number" id="g-mp" min="1" max="99" placeholder="np. 3, puste jeśli brak"></div>
+      <div><label for="g-int">Najlepsze miejsce na zawodach międzynarodowych</label><input type="number" id="g-int" min="1" max="99" placeholder="puste jeśli brak"></div>
+    </div>
+    <div id="gate-out"></div>
+  </div>
+  <div class="card">
+    <h2>Krok 2. Scenariusz rolki</h2>
+    <p class="sub">Wklej tekst, który zawodnik mówi w filmie. Sprawdzam długość i to, czy tekst pokrywa wszystkie cztery kryteria oceny. Tekst zostaje w Twojej przeglądarce.</p>
+    <div style="margin-top:14px"><label for="script">Tekst lektora</label><textarea id="script"></textarea></div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"><button class="btn" id="run">Sprawdź scenariusz</button><button class="btn ghost" id="demo">Wstaw przykład</button><button class="btn ghost" id="clear">Wyczyść</button></div>
+  </div>
+  <div class="card" id="result" aria-live="polite"></div>
+</section>
+
+<section class="view" id="v-plan">
+  <div class="card">
+    <h2>Rolka na 100 sekund</h2>
+    <p class="sub">Układ pokrywa cztery oficjalne kryteria i bierze to, co zwycięzcy robią konsekwentnie: wynik z miarą, ujęcia z zawodów, nazwa programu. Około 230 słów. Dane nie dowodzą, że sam układ przesądza.</p>
+    <div id="beats" style="margin-top:12px"></div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h2>Przed wysłaniem</h2>
+      <ul class="plain" id="checklist"></ul>
+    </div>
+    <div class="card">
+      <h2>Reszta wniosku</h2>
+      <ul class="plain">
+        <li>Formularz pyta osobno o wyzwania w karierze i o cele na dwa lata. Film i formularz powinny mówić to samo tymi samymi liczbami.</li>
+        <li>Kategoria U18 w VI edycji nie dostaje pieniędzy, tylko opiekę psychologa, dietetyka i refundację fizjoterapii do 2000 zł. W filmie warto mówić o tym wsparciu, a nie o sprzęcie.</li>
+        <li>U20 dostaje 1200 zł, a U23 2000 zł miesięcznie przez 10 miesięcy. Plan wydatków podajcie w punktach.</li>
+        <li>Wymagane załączniki: świadectwo lub zaświadczenie o średniej za 2025/2026 i oświadczenie o dochodzie. Brak dokumentu oznacza wezwanie do uzupełnienia w 7 dni.</li>
+        <li>Formularz prosi o profil na Instagramie, żeby radę lepiej poznała kandydata. Przypnijcie rolkę zgłoszeniową i uporządkujcie bio przed wysłaniem.</li>
+        <li>Opcjonalna opinia trenera lub szkoły to miejsce na cechy, o których mówi fundacja: postawa i determinacja.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Źródła</h2>
+    <ul class="plain">
+      <li><a href="https://fundacjawybiegajwprzyszlosc.pl/stypendysci/">Lista stypendystów na stronie fundacji</a></li>
+      <li><a href="https://fundacjawybiegajwprzyszlosc.pl/stypendia/">Zasady VI edycji</a> i <a href="https://fundacjawybiegajwprzyszlosc.pl/rekrutacja-formularz/">formularz zgłoszeniowy</a></li>
+      <li><a href="https://fundacjawybiegajwprzyszlosc.pl/wp-content/uploads/2026/11/16.11start-aktualny12-Regulamin_Wybiegaj_w_Przyszlosc_2027_listopad-12-1.pdf">Regulamin programu na 2027 rok</a></li>
+      <li><a href="https://bieganie.pl/newsy/polska-lekkoatletyka-sie-odradza/">Komunikat o stypendystach V edycji</a> i <a href="https://bieganie.pl/newsy/stypendysci-v-edycji-programu-wybiegaj-w-przyszlosc/">wypowiedź koordynatorki o kryteriach</a></li>
+      <li>Liczba zgłoszeń w I edycji (141): wpis w serwisie 1mila.pl z 2022 roku, widoczny w wyszukiwarce. Sama strona już nie istnieje, więc liczby nie da się sprawdzić u źródła.</li>
+      <li>Ogłoszenia wyników na YouTube: <a href="https://www.youtube.com/watch?v=vwyKpETWUDA">II edycja</a>, <a href="https://www.youtube.com/watch?v=4z81m0rw4w0">III edycja</a>, <a href="https://www.youtube.com/watch?v=wT5ps66VX-8">IV edycja</a></li>
+    </ul>
+  </div>
+</section>
+
+</div></main>
+<div class="tip" id="tip"></div>
+
+<script>
+// Dane zebrane 24.11.2026. Źródła: strona fundacji, regulamin VI edycji, bieganie.pl, 1mila.pl,
+// YouTube (filmy zgłoszeniowe + ogłoszenia wyników), Instagram (#wybiegajwprzyszlosc).
+// g = tytuł mistrza Polski w opisie fundacji, r = rekord Polski, i = start lub medal międzynarodowy
+const EDITIONS = [
+  { ed: "I", year: 2022, apps: 141, list: [
+    ["Dorota Nowak-Łażewska",1,0,0],["Maja Woźniak",1,1,0],["Tomasz Bajraszewski",1,0,0],["Maria Jarosińska",1,0,0],
+    ["Lena Suchowolak",1,0,0],["Dawid Kułek",1,0,0],["Wiktoria Biskup",0,0,0],["Mateusz Śmiertka",0,0,0]]},
+  { ed: "II", year: 2023, apps: null, list: [
+    ["Zofia Tomczyk",1,0,0],["Michał Kiernożycki",1,0,0],["Weronika Dudzińska",0,0,0],["Zuzanna Wiernicka",1,0,1],
+    ["Tomasz Bajraszewski",0,0,1],["Maria Jarosińska",1,0,1],["Łukasz Zaczyk",1,0,0],["Lena Pajęcka",0,1,1],
+    ["Michał Gorzkowicz",0,0,1],["Bartosz Kitliński",0,0,1],["Aleksandra Wiśniewska",1,1,0],["Martyna Krawczyńska",1,1,0]]},
+  { ed: "III", year: 2024, apps: 116, list: [
+    ["Helena Goliszewska",0,0,0],["Michał Kiernożycki",0,1,0],["Vanessa Michaluk",1,1,0],["Amelia Zochniak",0,0,1],
+    ["Oliwia Bełczew",0,0,1],["Zuzanna Wiernicka",0,0,1],["Aleksandra Belniak",0,0,0],["Zofia Tomczyk",0,1,0],
+    ["Lena Pajęcka",0,0,1],["Wiktoria Gadajska",0,1,0],["Dominika Duraj",1,0,0],["Bartłomiej Kisiel",0,0,0]]},
+  { ed: "IV", year: 2025, apps: null, list: [
+    ["Szymon Dołęga",0,0,0],["Zofia Rojek",0,0,1],["Zuzanna Wiernicka",1,1,1],["Kacper Góralczyk",1,0,1],
+    ["Łukasz Zaczyk",0,0,1],["Dominika Duraj",0,0,1],["Maciej Megier",1,0,1],["Michał Kiernożycki",0,1,0],
+    ["Natalia Szczęsna",0,0,0],["Aleksandra Belniak",0,0,0],["Stanisław Strzelecki",0,0,1],["Wiktoria Gadajska",0,0,1],
+    ["Zofia Tomczyk",0,1,1],["Anna Matuszewicz",0,0,1],["Carmen Nowicka",1,0,1],["Bartłomiej Kisiel",0,1,1],
+    ["Kinga Jackowska",1,1,0],["Martyna Krawczyńska",1,1,0],["Michał Kijewski",1,0,1],["Oksana Pestka",1,1,0],
+    ["Aleksandra Piotrowska",0,0,0,"brak opisu osiągnięć"]]},
+  { ed: "V", year: 2026, apps: null, list: [
+    ["Kinga Jackowska",1,1,1],["Adrian Dral",0,0,0],["Filip Granas",1,0,0],["Michał Gajdus",1,0,1],
+    ["Wiktor Jaroszewicz",1,0,0],["Oliwier Dondziło",1,0,0],["Róża Olchawa",1,0,1],["Oksana Pestka",1,1,1],
+    ["Wiktoria Gajosz",1,0,1],["Kamil Herzyk",1,0,1],["Bartłomiej Kisiel",1,0,1],["Carmen Nowicka",0,0,1],
+    ["Paulina Kubis",1,0,0],["Wiktoria Gadajska",1,0,1],["Natalia Szczęsna",1,0,1],["Bartosz Kitliński",0,0,1],
+    ["Maja Słodzińska",1,0,1],["Julia Adamczyk",0,0,1]]}
+];
+
+// Cechy filmu: ctx wynik z kontekstem, goal nazwany cel, spend konkretny plan wydatków, need sytuacja finansowa / warunki,
+// school nauka, beyond życie poza sportem, setback porażka i wniosek, fund zwrot do fundacji
+// grp: W = stypendium przyznane, S = odrzucone mimo tytułu MP lub startu międzynarodowego, M = odrzucone, niższy poziom
+const VIDEOS = [
+  { who:"Dorota Nowak-Łażewska", grp:"W", ed:"I", src:"YouTube", url:"https://www.youtube.com/watch?v=ghMWKYtHsis", len:119, views:501,
+    level:"Mistrzyni Polski U16 na 600 m, 3. wynik w historii kategorii",
+    f:{ctx:1,goal:0,spend:1,need:1,school:1,beyond:1,setback:0,fund:0},
+    note:"Zaczyna od wieku i szkoły, potem droga od przedszkola do mistrzostwa. Podaje czas i miejsce wyniku w historii. Mówi o edukacji domowej, malarstwie, harcerstwie i o tym, że rodzice szukają pieniędzy na jej treningi." },
+  { who:"Natalia Szczęsna", grp:"W", ed:"IV", src:"YouTube", url:"https://www.youtube.com/watch?v=T2Suhnn1pdU", len:89, views:300,
+    level:"Brąz MP seniorów na 100 m ppł, 3 medale MP",
+    f:{ctx:1,goal:1,spend:1,need:0,school:0,beyond:0,setback:0,fund:1},
+    note:"Najkrótszy z pełnych filmów. Każdy wynik ma kontekst: 17. zawodniczka w historii z medalem seniorskim w młodszej kategorii, złamana bariera 13 s, 7. miejsce w rankingu europejskim. Cel: mistrzostwa Europy. Plan: fizjoterapeuta, dietetyk, psycholog, sprzęt." },
+  { who:"Wiktoria Gajosz", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRm5SN9DbOr/", len:67, likes:5789, comments:51, followers:"222 tys.",
+    level:"Mistrzyni Polski U20 na 200 m, brąz ME U20 w sztafecie",
+    f:{ctx:1,goal:1,spend:0,need:0,school:0,beyond:1,setback:1,fund:1},
+    vis:{talk:0,comp:0,logo:0,subs:1,archive:0},
+    note:"Film z lektorem i napisami słowo po słowie, nagrany z operatorem jednego dnia na stadionie, kadr filmowy z czarnymi pasami. Otwarcie i zamknięcie to zbliżenie twarzy. Treść: początki, trener, który uwierzył, frustracja czwartych miejsc i wniosek, potem medale MŚ i ME U20, rekordy Polski, marzenie o igrzyskach. Kończy zdaniem, że zgłasza się, bo chce dalej biec po marzenia. Nie mówi o wydatkach, nauce ani sytuacji. Brak ujęć z zawodów." },
+  { who:"Martyna Krawczyńska", grp:"W", ed:"IV", src:"Instagram", url:"https://www.instagram.com/p/DDh820GNcKn/", len:53, likes:250, comments:null,
+    level:"Mistrzyni Polski na 3000 m z przeszkodami, rekordzistka Polski",
+    f:null, vis:{talk:0,comp:0,logo:0,subs:0,archive:0},
+    note:"Przez całe 53 sekundy jedno nieruchome zdjęcie w stroju startowym, eksport z TikToka, bez napisów. Najprostsza forma w całej próbie, a stypendium przyznane. Wcześniej stypendystka II edycji. Ścieżki dźwiękowej nie udało się spisać." },
+  { who:"Filip Granas", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRkzs1pjAnC/", len:128, likes:415, followers:"1,9 tys.",
+    level:"Mistrz Polski U16 na 600 m, rekord Polski U16 w hali",
+    f:{ctx:1,goal:1,spend:1,need:0,school:1,beyond:0,setback:0,fund:1},
+    vis:{talk:1,comp:1,logo:1,subs:1,archive:0},
+    note:"Mówi do kamery w dwóch miejscach (stadion, hala), logo fundacji na ekranie od pierwszej sekundy, duże napisy słowo po słowie. Każdy wynik z miarą: czasy 1:24.06 i 1:21.58 jako plansze, poprawa życiówki o 2 s, piąty czas w tabelach przed startem. Plan: fizjoterapeuta, zgrupowania, sprzęt. Mówi o łączeniu nauki ze sportem. Cel nazwany: mistrzostwa Europy U18 w Rieti. 8 sekund ponad limit." },
+  { who:"Adrian Dral", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRAjFvPCKNL/", len:61, likes:172, followers:"1,4 tys.",
+    level:"Wicemistrz Polski U18 w pchnięciu kulą",
+    f:null, vis:{talk:0,comp:1,logo:0,subs:0,archive:0},
+    note:"Montaż pchnięć z treningów i zawodów zrobiony w CapCut, kilkanaście ujęć techniki z różnych miejsc. Nie pojawia się mówiący zawodnik, brak napisów i plansz. Ścieżki dźwiękowej nie udało się spisać." },
+  { who:"Natalia Szczęsna", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRwlfNXjV5T/", len:114, likes:560, followers:"11,6 tys.",
+    level:"Mistrzyni Polski U23 na 100 m ppł, uczestniczka ME U23",
+    f:null, vis:{talk:1,comp:1,logo:1,subs:0,archive:0},
+    note:"Drugie zgłoszenie tej zawodniczki, po stypendium w IV edycji. Mówi do kamery na stadionie, znak fundacji w rogu przez cały film, wstawki graficzne (koła olimpijskie, linia tętna, zdjęcia), bieg z mistrzostw Europy, na końcu dyplom. Opis rolki mówi o ludziach, którymi otacza się w sporcie. Bez napisów, mowy nie udało się spisać." },
+  { who:"Róża Olchawa", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRsjs-5CEh6/", len:84, likes:255, followers:"1,0 tys.",
+    level:"Mistrzyni Polski U20 na 800 m, uczestniczka ME U20",
+    f:null, vis:{talk:0,comp:1,logo:0,subs:0,archive:1},
+    note:"Montaż chronologiczny: zdjęcia z dzieciństwa z pierwszych biegów i medalem, treningi, taśma na kontuzjowanej nodze, biegi z trybun, podium, kadry z transmisji z nazwiskiem. Bez mówienia do kamery i bez napisów. Ścieżki dźwiękowej nie udało się spisać." },
+  { who:"Carmen Nowicka", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRPkWZnDSuF/", len:131, likes:2165, followers:"26 tys.",
+    level:"Brąz MP U23 w siedmioboju, uczestniczka ME U23",
+    f:null, vis:{talk:0,comp:1,logo:1,subs:0,archive:0},
+    note:"Szybki montaż ponad 30 ujęć: starty w stroju kadry, podium, rozdawanie autografów, trener, siłownia, jedzenie, zmęczenie po biegu. Logo fundacji na początku. Opis rolki to podziękowanie za poprzedni rok w programie i prośba o kolejny. 11 sekund ponad limit. Bez napisów, mowy nie udało się spisać." },
+  { who:"Paulina Kubis", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRz_PDkjQzj/", len:98, likes:462, followers:"3,5 tys.",
+    level:"Mistrzyni Polski U23 na 400 m ppł i w siedmioboju",
+    f:null, vis:{talk:1,comp:1,logo:1,subs:0,archive:0},
+    note:"Mówi do kamery w padającym śniegu, trzyma mikrofon krawatowy. Logo fundacji jako wstawka, obraz w obrazie z kadrami z transmisji, ściana medali, starty, siłownia. Wysłane w ostatnim dniu naboru. Bez napisów, mowy nie udało się spisać." },
+  { who:"Kamil Herzyk", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRXUfQfDKm3/", len:197, likes:563, followers:"4,7 tys.",
+    level:"Mistrz Polski U23 na 5000 m, uczestnik ME U23",
+    f:null, vis:{talk:0,comp:1,logo:0,subs:0,archive:1},
+    note:"3:17, czyli 77 sekund ponad limit, a stypendium przyznane. Archiwalny montaż od dziecięcych biegów przez podium i starty po drużynowe mistrzostwa Europy. Bez mówienia do kamery i bez napisów. Ścieżki dźwiękowej nie udało się spisać." },
+  { who:"Oliwier Dondziło", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRkue4NDVzA/", len:58, likes:200, followers:"0,4 tys.",
+    level:"Mistrz Polski U18 na 400 m",
+    f:null, vis:{talk:1,comp:1,logo:1,subs:0,archive:0},
+    note:"Najkrótsza rolka zwycięzcy V edycji. Zaczyna i kończy w stroju kadry, mówiąc do kamery, z planszą z nazwą programu. W środku zdjęcia i krótkie ujęcia: flaga, podium, starty, regeneracja. Najmniejsze konto w grupie. Mowy nie udało się spisać." },
+  { who:"Julia Adamczyk", grp:"W", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DQ4O9sKDHUF/", len:106, likes:347, followers:"6,7 tys.",
+    level:"Wicemistrzyni Polski U23 w skoku w dal, uczestniczka ME U23",
+    f:{ctx:1,goal:0,spend:1,need:0,school:0,beyond:0,setback:0,fund:1},
+    vis:{talk:1,comp:1,logo:1,subs:1,archive:0},
+    note:"Plansza tytułowa z nazwą programu i podpisem, potem mówi do kamery na stadionie o zachodzie słońca z mikrofonem krawatowym i napisami. Na ekranie dopiski: srebro MP U23, 6,34 m. Mówi o 11 medalach MP, o tym, że wynik to nie tylko jej zasługa, i dlaczego chce wsparcia fundacji także poza sportem. Plan: fizjoterapeuci, dieta, psycholog, suplementy. Wstawki z mistrzostw świata U20 i zdjęcia reporterskie na koniec." },
+
+  { who:"Eliza G.", grp:"S", ed:"I", src:"YouTube", url:"https://www.youtube.com/watch?v=kt-Di7C2yPE", len:114, views:1920,
+    level:"Mistrzyni Polski U16 na 2000 m, rekord Polski",
+    f:{ctx:1,goal:1,spend:0,need:0,school:1,beyond:0,setback:0,fund:0},
+    note:"Poprawna, spokojna autoprezentacja z czasem rekordu i celami (ME, MŚ, igrzyska). Nie mówi, na co przeznaczy stypendium ani dlaczego go potrzebuje." },
+  { who:"Kacper Z.", grp:"S", ed:"II", src:"YouTube", url:"https://www.youtube.com/watch?v=DGv3vlulP0g", len:116, views:342,
+    level:"Mistrz Polski U16 na 2000 m",
+    f:{ctx:0,goal:1,spend:0,need:0,school:0,beyond:1,setback:0,fund:0},
+    note:"Długa lista wyników regionalnych przed najważniejszym. Plan wydatków w jednym ogólnym zdaniu." },
+  { who:"Wiktor J.", grp:"S", ed:"II", src:"YouTube", url:"https://www.youtube.com/watch?v=U2fPPo-GzJA", len:116, views:423,
+    level:"3 złote medale MP U18, 11. miejsce na ME U18",
+    f:{ctx:1,goal:1,spend:1,need:0,school:0,beyond:0,setback:0,fund:0},
+    note:"Najmocniejsze wyniki w całej próbie. Film to chronologiczna lista startów czytana szybko, bez słowa o sobie poza sportem i bez uzasadnienia potrzeby. Kategoria U18 miała wtedy najwięcej zgłoszeń." },
+  { who:"Krzysztof Z.", grp:"S", ed:"III", src:"YouTube", url:"https://www.youtube.com/watch?v=n2rMixFXz6M", len:106, views:362,
+    level:"7. miejsce na ME, mistrz Polski U16",
+    f:{ctx:0,goal:0,spend:1,need:0,school:1,beyond:0,setback:0,fund:0},
+    note:"Nagranie mówione z głowy, luźnym tonem, z powtórzeniami. Wyniki bez dat i czasów. Brak celu na kolejny sezon." },
+  { who:"Karol M.", grp:"S", ed:"III", src:"YouTube", url:"https://www.youtube.com/watch?v=U9GwYkv0OH8", len:203, views:483,
+    level:"Halowy mistrz Polski na 600 m, brąz MP na 800 m",
+    f:{ctx:0,goal:1,spend:1,need:0,school:1,beyond:0,setback:1,fund:1},
+    note:"Dobra historia z komentarzem telewizyjnym z biegów, ale 3:23, czyli o 83 s ponad limit. Pierwsze 35 s to czołówka z muzyką." },
+  { who:"Daria D.", grp:"S", ed:"IV", src:"YouTube", url:"https://www.youtube.com/watch?v=aDiCFsgxNi8", len:130, views:204,
+    level:"Srebro i brąz MP U20, mecz międzynarodowy U20",
+    f:{ctx:0,goal:1,spend:1,need:0,school:0,beyond:0,setback:1,fund:0},
+    note:"Wątek kontuzji i powrotu. 2:10, czyli 10 s ponad limit." },
+  { who:"Karol K.", grp:"S", ed:"IV", src:"YouTube", url:"https://www.youtube.com/watch?v=iJhZXQohszQ", len:67, views:37,
+    level:"5 złotych medali MP w pchnięciu kulą, 12. miejsce na ME U18",
+    f:{ctx:1,goal:1,spend:1,need:0,school:0,beyond:0,setback:0,fund:1},
+    note:"67 sekund, sama lista medali i jedno zdanie o wydatkach. Nic o nauce, sytuacji ani o tym, kim jest poza kołem." },
+  { who:"Daria D.", grp:"S", ed:"V", src:"YouTube", url:"https://www.youtube.com/watch?v=zfSU4Qfk4Tg", len:130, views:35,
+    level:"10 medali MP, złoto MP w przełajach U20, przełajowe ME",
+    f:{ctx:1,goal:1,spend:1,need:0,school:0,beyond:0,setback:1,fund:1},
+    note:"Drugie podejście tej samej zawodniczki. Lepiej napisany tekst, ale ponownie 2:10 i brak wątku nauki oraz sytuacji." },
+
+  { who:"Bartosz W.", grp:"M", ed:"I", src:"YouTube", url:"https://www.youtube.com/watch?v=h84wk9EfFrg", len:220, views:528,
+    level:"7. miejsce na MP U16 na 300 m",
+    f:{ctx:0,goal:0,spend:1,need:0,school:1,beyond:1,setback:0,fund:0},
+    note:"3:40, długie wstawki muzyczne. Dużo o zainteresowaniach, mało o wynikach." },
+  { who:"Mikołaj O.", grp:"M", ed:"I", src:"YouTube", url:"https://www.youtube.com/watch?v=PRcVyrDOdgM", len:121, views:3748,
+    level:"Srebro MP młodzików na 2000 m",
+    f:{ctx:1,goal:0,spend:0,need:0,school:0,beyond:0,setback:0,fund:0},
+    note:"Film opublikowany przez klub. Automatyczna transkrypcja nieczytelna, kodowanie cech mało pewne." },
+  { who:"Hubert M.", grp:"M", ed:"II", src:"YouTube", url:"https://www.youtube.com/watch?v=Ah5TI-pl0gk", len:87, views:293,
+    level:"5. miejsce na MP U16 na 1000 m z przeszkodami",
+    f:{ctx:0,goal:0,spend:1,need:0,school:0,beyond:0,setback:0,fund:1},
+    note:"Zwięzły, uporządkowany. Cel to medal olimpijski, bez celu na najbliższy sezon." },
+  { who:"Kuba Ś.", grp:"M", ed:"II", src:"YouTube", url:"https://www.youtube.com/watch?v=1VuvfmaRf9Q", len:73, views:148,
+    level:"2 brązowe medale MP na 200 m",
+    f:{ctx:0,goal:0,spend:0,need:1,school:0,beyond:0,setback:0,fund:0},
+    note:"Jedyny w tej grupie, który opisuje warunki: brak pełnej bieżni, dojazdy, zaśnieżony stadion. Film kończy się bez prośby i bez planu." },
+  { who:"Amelia P.", grp:"M", ed:"II", src:"YouTube", url:"https://www.youtube.com/watch?v=cHnTscfQs0I", len:86, views:594,
+    level:"5. i 6. miejsca na MP U18",
+    f:{ctx:1,goal:0,spend:0,need:0,school:0,beyond:0,setback:0,fund:0},
+    note:"Relacja z sezonu start po starcie. Nie pada słowo o stypendium." },
+  { who:"Amelia M.", grp:"M", ed:"II", src:"YouTube", url:"https://www.youtube.com/watch?v=2WoAelJzCWI", len:138, views:237,
+    level:"13 lat, medale Czwartków Lekkoatletycznych",
+    f:{ctx:1,goal:0,spend:1,need:0,school:1,beyond:0,setback:0,fund:0},
+    note:"Wiek poniżej kategorii objętych programem. 2:18." },
+  { who:"Alicja S.", grp:"M", ed:"II", src:"YouTube", url:"https://www.youtube.com/watch?v=3TyG2OB5bTA", len:119, views:282,
+    level:"15. miejsce na MP, medale mistrzostw Śląska",
+    f:{ctx:0,goal:1,spend:1,need:0,school:1,beyond:1,setback:1,fund:1},
+    note:"Najpełniejszy scenariusz w całej próbie: porażka i wniosek, szkoła, plan, cel, zwrot do fundacji. Zabrakło wyniku sportowego." },
+  { who:"Zofia W.", grp:"M", ed:"III", src:"YouTube", url:"https://www.youtube.com/watch?v=XkckDD_ZENk", len:120, views:104,
+    level:"14 lat, bez startu na MP",
+    f:{ctx:1,goal:1,spend:0,need:0,school:0,beyond:1,setback:1,fund:0},
+    note:"Świetna anegdota o samotnym powtórzonym biegu. Wyniki poniżej progu formalnego." },
+  { who:"Adam S.", grp:"M", ed:"III", src:"YouTube", url:"https://www.youtube.com/watch?v=pmJfjs4v3sA", len:119, views:105,
+    level:"Brąz MP U16 rok wcześniej, sezon z kontuzją",
+    f:{ctx:0,goal:1,spend:1,need:0,school:0,beyond:0,setback:1,fund:0},
+    note:"Około połowy filmu to muzyka i ujęcia z biegów bez narracji." },
+  { who:"Daria Du.", grp:"M", ed:"III", src:"YouTube", url:"https://www.youtube.com/watch?v=-s6xGvo61V4", len:122, views:2838,
+    level:"13 lat, nieoficjalne rekordy Polski w kategorii wiekowej",
+    f:{ctx:1,goal:0,spend:0,need:0,school:1,beyond:1,setback:0,fund:0},
+    note:"Film opublikowany przez klub. Wiek poniżej kategorii objętych programem." },
+
+  { who:"Antek G.", grp:"M", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRxYtyBiNBi/", len:50, likes:402, comments:13, level:"5. miejsce na MP w pierwszym roku kategorii, przełajowe ME", f:null,
+    vis:{talk:1,comp:1,logo:1,subs:1,archive:0},
+    note:"Technicznie jedna z najlepszych rolek w próbie: ujęcia z drona, mówienie do kamery, napisy, logo fundacji, plansze imprez. Cele nazwane: wygrana na MP U20 i kwalifikacja na MŚ U20. Brak na liście stypendystów." },
+  { who:"Kandydat K.", grp:"M", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRwpveainhB/", len:108, likes:714, comments:39, level:"reprezentant Polski U18 według wstawki w filmie", f:null,
+    vis:{talk:1,comp:1,logo:1,subs:0,archive:0},
+    note:"Logo fundacji od pierwszej sekundy, mówienie do kamery, starty, strój kadry, siłownia, fizjoterapia. Forma taka sama jak u zwycięzców. Brak na liście stypendystów." },
+  { who:"Kandydatka M.", grp:"M", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRnQzPtDP3e/", len:null, likes:404, comments:28, level:"nie ustalono", f:null,
+    note:"Opis: jedno zdanie, że to filmik zgłoszeniowy do 5. edycji. Brak na liście stypendystów." },
+  { who:"Ala W.", grp:"M", ed:"V", src:"Instagram", url:"https://www.instagram.com/p/DRDKZ5mDi1b/", len:null, likes:546, comments:18, level:"kategoria U23", f:null,
+    note:"Opis: zgłoszenie do V edycji, hasztagi programu i kategorii. Brak na liście stypendystów." },
+  { who:"Aleksandra Wiśniewska", grp:"M", ed:"IV", src:"Instagram", url:"https://www.instagram.com/p/DDmbjD4sdD-/", len:null, likes:134, comments:2, level:"stypendystka II edycji", f:null,
+    note:"Była stypendystka, która zgłosiła się ponownie do IV edycji i nie znalazła się na liście." }
+];
+
+const FEATURES = [
+  ["ctx","Wynik z kontekstem","czas, rekord, miejsce w historii albo w rankingu, a nie samo słowo medal"],
+  ["goal","Nazwany cel","konkretna impreza lub minimum na najbliższy sezon"],
+  ["spend","Konkretny plan wydatków","co najmniej dwie nazwane pozycje"],
+  ["need","Sytuacja i warunki","finanse rodziny, dojazdy, brak obiektu"],
+  ["school","Nauka","szkoła, średnia, studia"],
+  ["beyond","Życie poza sportem","zainteresowania, wartości, charakter"],
+  ["setback","Porażka i wniosek","kontuzja albo nieudany start i co z tego wynika"],
+  ["fund","Zwrot do fundacji","nazwa programu lub bezpośrednie zwrócenie się do rady"]
+];
+const VISUALS = [
+  ["comp","Ujęcia z zawodów","biegi, rzuty, podium, kadry z transmisji"],
+  ["logo","Nazwa lub logo programu na ekranie","znak fundacji albo plansza tytułowa"],
+  ["talk","Zawodnik mówi do kamery","a nie tylko lektor lub muzyka"],
+  ["subs","Napisy wgrane w obraz","słowo po słowie albo linijkami"],
+  ["archive","Archiwalia z dzieciństwa","zdjęcia i filmy z pierwszych startów"]
+];
+if (typeof module !== "undefined") module.exports = { EDITIONS, VIDEOS, FEATURES, VISUALS };
+
+</script>
+<script>
+(function(){
+const $=s=>document.querySelector(s), el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const pct=(a,b)=>b?Math.round(100*a/b):0;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- statystyki z danych ---------- */
+const seen={};
+const ED=EDITIONS.map(e=>{
+  const n=e.list.length;
+  const rows=e.list.map(x=>{const prev=seen[x[0]]||0;return {n:x[0],ed:e.ed,g:x[1],r:x[2],i:x[3],nth:prev+1,note:x[4]||""}});
+  rows.forEach(r=>seen[r.n]=r.nth);
+  return {ed:e.ed,year:e.year,apps:e.apps,n,rows,
+    any:rows.filter(r=>r.g||r.r||r.i).length,intl:rows.filter(r=>r.i).length,gold:rows.filter(r=>r.g).length,ret:rows.filter(r=>r.nth>1).length};
+});
+const SLOTS=ED.reduce((a,e)=>a+e.n,0), PEOPLE=Object.keys(seen).length;
+const V=ED[ED.length-1];
+const grp=g=>VIDEOS.filter(v=>v.grp===g), coded=g=>grp(g).filter(v=>v.f);
+const GN={W:"Stypendium przyznane",S:"Bez stypendium, mocne wyniki",M:"Bez stypendium"};
+const GC={W:"var(--win)",S:"var(--strong)",M:"var(--other)"};
+const fcount=(g,k)=>coded(g).filter(v=>v.f[k]).length;
+const over=g=>grp(g).filter(v=>v.len&&v.len>125).length, withLen=g=>grp(g).filter(v=>v.len).length;
+
+/* ---------- licznik ---------- */
+(function(){const end=Date.parse("2026-12-07T22:59:00Z");const d=end-Date.now();
+  $("#cd").textContent=d<=0?"Nabór zakończony":(Math.floor(d/864e5)+" dni "+Math.floor(d%864e5/36e5)+" godz.");})();
+
+/* ---------- kafle ---------- */
+const tiles=[
+  [SLOTS,"stypendiów w 5 edycjach dla "+PEOPLE+" osób"],
+  [pct(V.any,V.n)+"%","stypendystów V edycji z tytułem mistrza Polski, rekordem lub startem międzynarodowym ("+V.any+" z "+V.n+")"],
+  [pct(V.ret,V.n)+"%","miejsc w V edycji dla osób, które już były w programie ("+V.ret+" z "+V.n+")"],
+  [coded("S").length,"odrzuconych zgłoszeń od mistrzów Polski i reprezentantów w zebranej próbie"]
+];
+tiles.forEach(t=>{const c=el("div","card tile");c.innerHTML="<b>"+t[0]+"</b><span>"+t[1]+"</span>";$("#tiles").appendChild(c)});
+
+/* ---------- ustalenia ---------- */
+const WC=coded("W").length,VW5=VIDEOS.filter(v=>v.grp==="W"&&v.ed==="V"),VW=VW5.length,vcount=k=>VW5.filter(v=>v.vis&&v.vis[k]).length;
+const S=coded("S").length, I4=ED[3], lastTwo=ED[3].n+ED[4].n, retTwo=ED[3].ret+ED[4].ret;
+const F=[
+ ["mocne","Wynik sportowy jest bramką",
+  "W V edycji "+V.gold+" z "+V.n+" stypendystów miało tytuł mistrza Polski, a "+V.intl+" z "+V.n+" start lub medal międzynarodowy. Udział reprezentantów rósł od 0 z 8 w I edycji do "+I4.intl+" z "+I4.n+" w IV. Koordynatorka programu powiedziała po V edycji, że wyniki kandydatów były najlepsze w historii.",
+  "Jeśli zawodnik nie ma medalu mistrzostw Polski z ostatnich dwóch lat, rolka tego nie nadrobi. Jeśli ma, pokażcie go w pierwszych pięciu sekundach."],
+ ["mocne","Nowych miejsc jest mniej, niż wygląda",
+  "W dwóch ostatnich edycjach "+retTwo+" z "+lastTwo+" stypendiów trafiło do osób, które były w programie wcześniej. Przy ogłoszeniu II edycji fundacja uzasadniła ponowne przyznanie tym, że zawodnicy zrobili duży postęp i są świetnymi ludźmi. W I edycji było 141 zgłoszeń na 8 miejsc, w III 116 na 12, a w IV i V fundacja mówi o setkach.",
+  "Debiutant konkuruje o mniej więcej 11 miejsc. Rolka musi pokazać postęp rok do roku, bo to jest argument, którym fundacja sama się posługuje."],
+ ["srednie","Przy równym poziomie decyduje reszta wniosku",
+  "Członek rady powiedział to wprost przy ogłoszeniu II edycji: przy równym poziomie sportowym decydowały inne czynniki, o które fundacja pytała. W próbie jest "+S+" odrzuconych zgłoszeń od mistrzów Polski lub reprezentantów, w tym trzykrotnego mistrza Polski U18 i pięciokrotnego mistrza w pchnięciu kulą.",
+  "Traktujcie film jako odpowiedź na pytanie o te inne czynniki, a nie jako powtórkę tabeli wyników z formularza."],
+ ["srednie","Treść filmu słabo odróżnia zwycięzców od odrzuconych mistrzów",
+  "Kryteria to wyniki, prezentacja, nauka i sytuacja ekonomiczna. O sytuacji lub warunkach mówi "+fcount("W","need")+" z "+WC+" filmów zwycięzców ze znaną treścią i "+fcount("S","need")+" z "+S+" filmów mocnych zawodników bez stypendium. O nauce odpowiednio "+fcount("W","school")+" z "+WC+" i "+fcount("S","school")+" z "+S+". Żadna grupa nie wykorzystuje filmu do pokazania wszystkich czterech kryteriów.",
+  "To jest wolne pole. Zdanie o szkole i zdanie o warunkach lub kosztach nie kosztuje nic, a prawie nikt go nie mówi. Dane nie dowodzą, że to przesądza, ale kryteria są oficjalne."],
+ ["srednie","Limit 2 minut nie przesądza",
+  "Trzy z 10 rolek zwycięzców V edycji są dłuższe niż 2 minuty: 2:08, 2:11 i 3:17. Wśród odrzuconych mocnych zawodników limit przekroczyło "+over("S")+" z "+withLen("S")+". Zwycięskie rolki mają od 58 sekund do 3:17, mediana to około 1:40.",
+  "Trzymajcie się limitu, bo to zapis z formularza, ale nie tnijcie treści na siłę. Bezpieczny cel to 1:30 do 1:55."],
+ ["srednie","Zwycięzcy podają wynik z miarą i zwracają się do fundacji",
+  "We wszystkich "+WC+" filmach zwycięzców ze znaną treścią wynik ma miarę lub punkt odniesienia: czas na planszy, poprawa życiówki o 2 sekundy, piąty czas w tabelach, 6,34 m, miejsce w historii. W odrzuconych filmach mocnych zawodników robi to "+fcount("S","ctx")+" z "+S+". Do fundacji po nazwie zwraca się "+fcount("W","fund")+" z "+WC+" zwycięzców i "+fcount("S","fund")+" z "+S+" odrzuconych.",
+  "Każdy wynik z liczbą na ekranie. W tekście nazwa programu i jedno zdanie, po co zawodnikowi właśnie ta fundacja."],
+ ["srednie","Co widać w rolkach zwycięzców V edycji",
+  "Ujęcia z zawodów ma "+vcount("comp")+" z "+VW+" rolek, nazwę lub logo programu na ekranie "+vcount("logo")+", mówiącego do kamery zawodnika "+vcount("talk")+", napisy "+vcount("subs")+", archiwalia z dzieciństwa "+vcount("archive")+". Ale dwie obejrzane rolki kandydatów spoza listy mają to samo: logo, mówienie do kamery, starty, a jedna także drona i napisy.",
+  "Ujęcia ze startów i logo programu to standard, bez nich rolka odstaje. Sama jakość montażu nie daje przewagi."],
+ ["srednie","Polubienia nie mają związku z wynikiem naboru",
+  "Rolki zwycięzców V edycji zebrały od 172 do 5789 polubień, a cztery rolki kandydatów spoza listy od 402 do 714. Cztery z dziesięciu zwycięskich rolek mają mniej polubień niż najsłabsza z tych czterech. Rolka z 5789 polubieniami pochodzi z konta, które ma 222 tys. obserwujących.",
+  "Nie optymalizujcie rolki pod zasięg. Ogląda ją rada fundacji, a nie algorytm."]
+];
+const LAB={mocne:"dowody mocne",srednie:"dowody średnie",slabe:"dowody słabe"};
+F.forEach((f,i)=>{const d=el("div","finding");
+  d.innerHTML='<div class="num">'+(i+1)+'</div><h3>'+f[1]+' <span class="pill '+f[0]+'">'+LAB[f[0]]+'</span></h3><p>'+f[2]+'</p><p class="do"><b>Co z tym zrobić:</b> '+f[3]+'</p>';
+  $("#findings").appendChild(d)});
+
+/* ---------- wykresy słupkowe ---------- */
+const tip=$("#tip");
+function showTip(e,text){tip.textContent=text;tip.style.display="block";tip.style.left=Math.max(8,Math.min(e.clientX+12,innerWidth-270))+"px";tip.style.top=(e.clientY+14)+"px"}
+function hover(node,text){node.addEventListener("mousemove",e=>showTip(e,text));node.addEventListener("click",e=>{showTip(e,text);e.stopPropagation()});node.addEventListener("mouseleave",()=>tip.style.display="none")}
+document.addEventListener("click",()=>tip.style.display="none");addEventListener("scroll",()=>tip.style.display="none",{passive:true});
+function labelTables(){document.querySelectorAll("table.stack").forEach(t=>{const h=[...t.querySelectorAll("thead th")].map(x=>x.textContent);t.querySelectorAll("tbody tr").forEach(tr=>[...tr.children].forEach((td,i)=>td.setAttribute("data-label",h[i]||"")))})}
+function bars(sel,rows,color){const box=$(sel);rows.forEach(r=>{const row=el("div","bar-row");
+  row.innerHTML='<span>'+r.label+'</span><div class="track"><div class="fill" style="width:'+(r.max?100*r.v/r.max:pct(r.a,r.b))+'%;background:'+(r.color||color)+'"></div></div><span class="val"><b>'+r.text+'</b>'+(r.sub?" "+r.sub:"")+'</span>';
+  hover(row,r.tip);box.appendChild(row)})}
+bars("#chart-intl",ED.map(e=>({label:"Edycja "+e.ed+" ("+e.year+")",a:e.intl,b:e.n,text:pct(e.intl,e.n)+"%",sub:e.intl+"/"+e.n,tip:e.intl+" z "+e.n+" stypendystów ze startem lub medalem międzynarodowym"})),"var(--accent)");
+bars("#chart-any",ED.map(e=>({label:"Edycja "+e.ed,a:e.any,b:e.n,text:pct(e.any,e.n)+"%",sub:e.any+"/"+e.n,tip:e.any+" z "+e.n+": mistrz Polski, rekord Polski lub start międzynarodowy"})),"var(--accent)");
+bars("#chart-ret",ED.slice(1).map(e=>({label:"Edycja "+e.ed,a:e.ret,b:e.n,text:pct(e.ret,e.n)+"%",sub:e.ret+"/"+e.n,tip:e.ret+" z "+e.n+" było w programie wcześniej, "+(e.n-e.ret)+" to debiutanci"})),"var(--accent)");
+const multi=Object.values(seen).filter(n=>n>1).length;
+$("#ret-note").textContent=multi+" z "+PEOPLE+" osób dostało stypendium więcej niż raz. Lista IV edycji liczy 21 osób według ogłoszenia fundacji, strona pokazuje 20.";
+const ig=VIDEOS.filter(v=>v.src==="Instagram"&&v.ed==="V").sort((a,b)=>b.likes-a.likes), igmax=ig[0].likes;
+bars("#chart-ig",ig.map(v=>({label:v.who,v:v.likes,max:igmax,color:GC[v.grp],text:v.likes.toLocaleString("pl-PL"),tip:v.who+": "+v.likes+" polubień"+(v.followers?", konto "+v.followers+" obserwujących":"")+". "+GN[v.grp]})));
+
+
+/* ---------- widok wniosków: obraz ---------- */
+(function(){
+  // poziom sportowy V edycji
+  const tier=r=>(r.g&&r.i)?3:((r.g||r.i)?2:1);
+  const rowsV=V.rows.slice().sort((a,b)=>tier(b)-tier(a));
+  const TL={3:"mistrz Polski i start międzynarodowy",2:"mistrz Polski albo start międzynarodowy",1:"medal mistrzostw Polski bez tytułu"};
+  rowsV.forEach(r=>{const i=el("i","t"+tier(r));hover(i,r.n+": "+TL[tier(r)]);$("#u-level").appendChild(i)});
+  [3,2,1].forEach(t=>{const n=rowsV.filter(r=>tier(r)===t).length;$("#u-level-leg").appendChild(el("span",null,'<i class="sw t'+t+'"></i><b>'+n+"</b> "+TL[t]))});
+  // 116 zgłoszeń
+  const e3=ED[2];for(let k=0;k<e3.apps;k++){const i=el("i",k<e3.n?"t3":"t0");$("#u-waffle").appendChild(i)}
+  // powracający
+  const rr=V.rows.slice().sort((a,b)=>b.nth-a.nth);
+  rr.forEach(r=>{const i=el("i",r.nth>1?"t3":"t1");hover(i,r.n+(r.nth>1?": w programie "+r.nth+". raz":": debiut"));$("#u-ret").appendChild(i)});
+  $("#u-ret-leg").appendChild(el("span",null,'<i class="sw t3"></i><b>'+V.ret+"</b> było w programie wcześniej"));
+  $("#u-ret-leg").appendChild(el("span",null,'<i class="sw t1"></i><b>'+(V.n-V.ret)+"</b> debiutantów"));
+  bars("#chart-intl2",ED.map(e=>({label:"Edycja "+e.ed+" ("+e.year+")",a:e.intl,b:e.n,text:pct(e.intl,e.n)+"%",sub:e.intl+"/"+e.n,tip:e.intl+" z "+e.n+" stypendystów ze startem lub medalem międzynarodowym"})),"var(--accent)");
+  // macierz rolek
+  const mm=t=>Math.floor(t/60)+":"+String(t%60).padStart(2,"0");
+  const W5=VW5.slice().sort((a,b)=>a.len-b.len);
+  $("#matrix thead").innerHTML="<tr><th>Zawodnik</th><th>Długość</th>"+VISUALS.map(f=>'<th class="c">'+f[1]+"</th>").join("")+'<th class="num">Polubienia</th></tr>';
+  W5.forEach(v=>{const tr=el("tr");const o=v.len>120;
+    tr.innerHTML="<td><b>"+v.who+'</b></td><td><span class="t">'+mm(v.len)+'</span> <span class="lenbar"><i class="'+(o?"over":"")+'" style="width:'+Math.min(100,v.len/2)+'%"></i><u></u></span>'+(o?" <small>ponad limit</small>":"")+"</td>"+
+      VISUALS.map(f=>'<td class="c"><span class="dotc'+(v.vis[f[0]]?" on":"")+'" title="'+f[1]+": "+(v.vis[f[0]]?"tak":"nie")+'"></span></td>').join("")+'<td class="num">'+v.likes.toLocaleString("pl-PL")+"</td>";
+    $("#matrix tbody").appendChild(tr)});
+  const tf=el("tr");tf.innerHTML='<td style="color:var(--muted)">Razem</td><td style="color:var(--muted)">'+W5.filter(v=>v.len>120).length+" z "+VW+" ponad limit</td>"+VISUALS.map(f=>'<td class="c"><b>'+vcount(f[0])+"/"+VW+"</b></td>").join("")+"<td></td>";
+  $("#matrix tbody").appendChild(tf);
+  W5.forEach(v=>{const o=v.len>120;const c=el("div","mcard");
+    c.innerHTML='<div class="hd"><b>'+v.who+"</b><span>"+v.likes.toLocaleString("pl-PL")+' polubień</span></div><div class="ln"><span class="t">'+mm(v.len)+'</span><span class="lenbar"><i class="'+(o?"over":"")+'" style="width:'+Math.min(100,v.len/2)+'%"></i><u></u></span>'+(o?"<small>ponad limit</small>":"")+'</div><div class="tags">'+VISUALS.map(f=>'<span class="tag'+(v.vis[f[0]]?"":" off")+'">'+({comp:"Zawody",logo:"Logo programu",talk:"Do kamery",subs:"Napisy",archive:"Archiwalia"})[f[0]]+"</span>").join("")+"</div>";
+    $("#mcards").appendChild(c)});
+  $("#mcards").appendChild(el("div","msum","Razem: "+VISUALS.map(f=>f[1].toLowerCase()+" "+vcount(f[0])+"/"+VW).join(", ")+". Przekreślone elementy nie występują w rolce."));
+  // trzy rzeczy
+  const NW=VIDEOS.filter(v=>v.grp!=="W"&&v.ed==="V"&&v.src==="Instagram");
+  const minNW=Math.min(...NW.map(v=>v.likes)),below=W5.filter(v=>v.likes<minNW).length;
+  $("#m-len").textContent=W5.filter(v=>v.len>120).length+" z "+VW;
+  $("#m-like").textContent=below+" z "+VW;
+  const NWv=NW.filter(v=>v.vis);$("#m-edit").textContent=NWv.length+" z "+NWv.length;
+  function strip(sel,rows,scale,ticks,mark){const Wd=300,H=118,L=18,R=30;const x=v=>L+(Wd-L-R)*scale(v);
+    let h='<svg viewBox="0 0 '+Wd+" "+H+'" width="100%" role="img">';
+    ticks.forEach(t=>{h+='<line x1="'+x(t[0])+'" x2="'+x(t[0])+'" y1="8" y2="'+(H-22)+'" stroke="var(--line)"/><text x="'+x(t[0])+'" y="'+(H-6)+'" text-anchor="middle">'+t[1]+"</text>"});
+    if(mark)h+='<line x1="'+x(mark)+'" x2="'+x(mark)+'" y1="4" y2="'+(H-22)+'" stroke="var(--crit)" stroke-width="2" stroke-dasharray="5 4"/>';
+    rows.forEach((r,i)=>{const y=30+i*42;h+='<text x="4" y="'+(y-14)+'" style="fill:var(--ink)">'+r.label+"</text>";
+      r.items.slice().sort((a,b)=>a.v-b.v).forEach(d=>{h+='<circle class="sd" cx="'+x(d.v)+'" cy="'+y+'" r="5.5" fill="'+r.color+'" fill-opacity=".85" stroke="var(--surface)" stroke-width="1.5" data-t="'+esc(d.t)+'"/>'})});
+    $(sel).innerHTML=h+"</svg>";document.querySelectorAll(sel+" .sd").forEach(d=>hover(d,d.dataset.t))}
+  strip("#s-len",[{label:"Zwycięzcy V edycji",color:"var(--win)",items:W5.map(v=>({v:v.len,t:v.who+": "+mm(v.len)}))},
+                  {label:"Spoza listy (obejrzane)",color:"var(--other)",items:NW.filter(v=>v.len).map(v=>({v:v.len,t:v.who+": "+mm(v.len)}))}],
+        v=>v/210,[[0,"0"],[60,"1:00"],[120,"2:00"],[180,"3:00"]],120);
+  const lg=v=>(Math.log10(v)-2)/2;
+  strip("#s-like",[{label:"Zwycięzcy V edycji",color:"var(--win)",items:W5.map(v=>({v:v.likes,t:v.who+": "+v.likes+" polubień"+(v.followers?", konto "+v.followers:"")}))},
+                   {label:"Spoza listy",color:"var(--other)",items:NW.map(v=>({v:v.likes,t:v.who+": "+v.likes+" polubień"}))}],
+        lg,[[100,"100"],[1000,"1 tys."],[10000,"10 tys."]]);
+  ["comp","logo","talk"].forEach(k=>{const f=VISUALS.find(x=>x[0]===k);const b=NWv.filter(v=>v.vis[k]).length;
+    bars("#s-edit",[{label:({comp:"Zawody",logo:"Logo programu",talk:"Do kamery"})[k],a:vcount(k),b:VW,text:vcount(k)+"/"+VW,color:"var(--win)",tip:"Zwycięzcy: "+vcount(k)+" z "+VW+" rolek. "+f[1]},
+                    {label:"spoza listy",a:b,b:NWv.length,text:b+"/"+NWv.length,color:"var(--other)",tip:"Spoza listy: "+b+" z "+NWv.length+" obejrzanych rolek"}])});
+  // kryteria
+  const C=[["Wyniki sportowe","wynik podany z miarą","ctx",0],["Prezentacja kandydata","zwrot do fundacji po nazwie","fund",0],["Wyniki w nauce","szkoła, średnia, studia","school",1],["Sytuacja ekonomiczna","finanse rodziny, warunki treningu","need",1]];
+  C.forEach(c=>{const d=el("div","crit");const w=fcount("W",c[2]),s2=fcount("S",c[2]);
+    const row=(a,b,col,lab)=>'<div class="cellbar" title="'+lab+": "+a+" z "+b+'"><b>'+a+"/"+b+'</b><div class="track" style="height:14px"><div class="fill" style="width:'+pct(a,b)+"%;background:"+col+'"></div></div></div>';
+    d.innerHTML="<div><h4>"+c[0]+"</h4><small>"+c[1]+'</small></div><div class="pair">'+row(w,WC,"var(--win)","Zwycięzcy")+row(s2,S,"var(--strong)","Mocni bez stypendium")+"</div>"+(c[3]?'<div class="free">Wolne pole: oficjalne kryterium, a mówi o nim '+(w+s2)+" z "+(WC+S)+" filmów.</div>":"");
+    $("#crit").appendChild(d)});
+  // co robić
+  [["Najpierw sprawdźcie poziom sportowy.","Bez medalu mistrzostw Polski z ostatnich dwóch lat rolka nie pomoże. W V edycji miało go 18 z 18 stypendystów."],
+   ["Wynik pokażcie liczbą w pierwszych sekundach.","Czas, odległość, miejsce w tabelach, poprawa życiówki. Robi to każdy zwycięski film, którego treść znam."],
+   ["Dajcie ujęcia z zawodów i nazwę programu na ekranie.","Ma je "+vcount("comp")+" i "+vcount("logo")+" z "+VW+" zwycięskich rolek. To standard, bez którego rolka odstaje."],
+   ["Powiedzcie jedno zdanie o szkole i jedno o warunkach lub kosztach.","To dwa z czterech kryteriów, a prawie nikt ich nie porusza. Tu można się odróżnić najmniejszym kosztem."],
+   ["Nie inwestujcie w efekty, drona ani zasięg.","Równie dopracowane rolki nie dostały stypendium, a polubienia nie mają związku z wynikiem naboru. Trzymajcie się limitu 2 minut."]
+  ].forEach(t=>$("#todo").appendChild(el("li",null,"<div><b>"+t[0]+"</b>"+t[1]+"</div>")));
+})();
+
+/* ---------- tabela stypendystów ---------- */
+const allRows=ED.flatMap(e=>e.rows);let edSel="V";
+const yes=b=>b?'<b style="color:var(--good)">tak</b>':'<span style="color:var(--muted)">w opisie brak</span>';
+function drawWin(){const tb=$("#win-table tbody");tb.innerHTML="";
+  allRows.filter(r=>edSel==="all"||r.ed===edSel).forEach(r=>{const tr=el("tr");
+    tr.innerHTML="<td>"+r.n+(r.note?' <small style="color:var(--muted)">('+r.note+')</small>':"")+"</td><td>"+r.ed+"</td><td>"+(r.nth>1?r.nth+". raz":"debiut")+"</td><td>"+yes(r.g)+"</td><td>"+yes(r.r)+"</td><td>"+yes(r.i)+"</td>";tb.appendChild(tr)});labelTables()}
+[["V","Edycja V"],["IV","IV"],["III","III"],["II","II"],["I","I"],["all","Wszystkie"]].forEach(([k,l])=>{const b=el("button","chip",l);b.setAttribute("aria-pressed",k===edSel);
+  b.onclick=()=>{edSel=k;document.querySelectorAll("#ed-filter .chip").forEach(x=>x.setAttribute("aria-pressed",x===b));drawWin()};$("#ed-filter").appendChild(b)});
+drawWin();
+
+/* ---------- tabela cech ---------- */
+(function(){const groups=["W","S","M"];
+  $("#feat-table thead").innerHTML="<tr><th>Element filmu</th>"+groups.map(g=>"<th>"+GN[g]+" (n="+coded(g).length+")</th>").join("")+"</tr>";
+  const tb=$("#feat-table tbody");
+  const rows=FEATURES.map(f=>({k:f[0],name:f[1],desc:f[2],get:g=>[fcount(g,f[0]),coded(g).length]}));
+  rows.push({name:"Przekroczony limit 2 minut",desc:"film dłuższy niż 2:05",get:g=>[over(g),withLen(g)]});
+  rows.forEach(r=>{const tr=el("tr");let h='<td class="feat">'+r.name+"<small>"+r.desc+"</small></td>";
+    groups.forEach(g=>{const [a,b]=r.get(g);h+='<td><div class="cellbar" title="'+a+" z "+b+'"><b>'+a+"/"+b+'</b><div class="track"><div class="fill" style="width:'+pct(a,b)+"%;background:"+GC[g]+'"></div></div></div></td>'});
+    tr.innerHTML=h;tb.appendChild(tr)});
+})();
+
+/* ---------- tabela obrazu ---------- */
+(function(){const nw=VIDEOS.filter(v=>v.grp!=="W"&&v.ed==="V"&&v.vis);
+  $("#vis-table thead").innerHTML="<tr><th>Element obrazu</th><th>Zwycięzcy V edycji (n="+VW+")</th><th>Spoza listy, V edycja (n="+nw.length+")</th></tr>";
+  const tb=$("#vis-table tbody");
+  VISUALS.forEach(f=>{const a=vcount(f[0]),b=nw.filter(v=>v.vis[f[0]]).length;const tr=el("tr");
+    tr.innerHTML='<td class="feat">'+f[1]+"<small>"+f[2]+'</small></td><td><div class="cellbar" title="'+a+" z "+VW+'"><b>'+a+"/"+VW+'</b><div class="track"><div class="fill" style="width:'+pct(a,VW)+'%;background:var(--win)"></div></div></div></td><td><div class="cellbar"><b>'+b+"/"+nw.length+'</b><div class="track"><div class="fill" style="width:'+pct(b,nw.length)+'%;background:var(--other)"></div></div></div></td>';
+    tb.appendChild(tr)});
+})();
+
+/* ---------- długości ---------- */
+(function(){const W=520,H=262,L=150,R=16,max=230,x=s=>L+(W-L-R)*s/max;
+  const rowsG=["W","S","M"],y=i=>80+i*66;
+  let s='<svg viewBox="0 0 '+W+" "+H+'" width="100%" role="img" aria-label="Długości filmów w sekundach według grup">';
+  [0,60,120,180].forEach(t=>{s+='<line x1="'+x(t)+'" x2="'+x(t)+'" y1="20" y2="'+(H-28)+'" stroke="var(--line)"/><text x="'+x(t)+'" y="'+(H-10)+'" text-anchor="middle">'+t+" s</text>"});
+  s+='<line x1="'+x(120)+'" x2="'+x(120)+'" y1="14" y2="'+(H-28)+'" stroke="var(--crit)" stroke-width="2" stroke-dasharray="5 4"/><text x="'+(x(120)+6)+'" y="14" style="fill:var(--crit)">limit 2:00</text>';
+  rowsG.forEach((g,i)=>{s+='<text x="0" y="'+(y(i)+4)+'" style="fill:var(--ink)">'+["Stypendium","Mocni, bez stypendium","Pozostali"][i]+"</text>";
+    const vs=grp(g).filter(v=>v.len).sort((a,b)=>a.len-b.len);let last=-99,stack=0;
+    vs.forEach(v=>{if(v.len-last<5){stack++}else{stack=0}last=v.len;
+      s+='<circle class="dot" cx="'+x(v.len)+'" cy="'+(y(i)-stack*11)+'" r="5.5" fill="'+GC[g]+'" stroke="var(--surface)" stroke-width="2" data-t="'+esc(v.who+", edycja "+v.ed+": "+Math.floor(v.len/60)+":"+String(v.len%60).padStart(2,"0"))+'"/>'})});
+  s+="</svg>";$("#chart-len").innerHTML=s;
+  document.querySelectorAll("#chart-len .dot").forEach(d=>hover(d,d.dataset.t));
+})();
+
+/* ---------- baza filmów ---------- */
+let vSel="all";
+function drawVids(){const box=$("#vid-list");box.innerHTML="";
+  VIDEOS.filter(v=>vSel==="all"||v.grp===vSel||(vSel==="IG"&&v.src==="Instagram")).forEach(v=>{const c=el("article","card vid");
+    const len=v.len?Math.floor(v.len/60)+":"+String(v.len%60).padStart(2,"0"):"długość nieznana";
+    const m=[v.src,"edycja "+v.ed,len];if(v.followers)m.push("konto "+v.followers);if(v.views!=null)m.push(v.views.toLocaleString("pl-PL")+" wyświetleń");if(v.likes!=null)m.push(v.likes.toLocaleString("pl-PL")+" polubień");
+    let tags="";if(v.f)tags='<div class="tags">'+FEATURES.map(f=>'<span class="tag'+(v.f[f[0]]?"":" off")+'">'+f[1]+"</span>").join("")+"</div>";
+    c.innerHTML='<header><h3>'+v.who+'</h3><span class="pill '+v.grp+'">'+GN[v.grp]+(v.unsure?", prawdopodobne zgłoszenie":"")+'</span></header><div class="meta">'+m.map(x=>"<span>"+x+"</span>").join("")+'</div><p><b>Poziom:</b> '+v.level+"</p><p>"+v.note+"</p>"+tags+(v.vis?'<div class="tags">'+VISUALS.map(f=>'<span class="tag'+(v.vis[f[0]]?"":" off")+'">'+f[1]+"</span>").join("")+"</div>":"")+'<p><a href="'+v.url+'">Otwórz film</a></p>';
+    box.appendChild(c)})}
+[["all","Wszystkie ("+VIDEOS.length+")"],["W","Stypendium ("+grp("W").length+")"],["S","Mocni, bez stypendium ("+grp("S").length+")"],["M","Pozostali ("+grp("M").length+")"],["IG","Instagram"]].forEach(([k,l])=>{const b=el("button","chip",l);b.setAttribute("aria-pressed",k===vSel);
+  b.onclick=()=>{vSel=k;document.querySelectorAll("#vid-filter .chip").forEach(x=>x.setAttribute("aria-pressed",x===b));drawVids()};$("#vid-filter").appendChild(b)});
+drawVids();
+
+/* ---------- próg formalny ---------- */
+function gate(){const y=+$("#g-year").value,mp=+$("#g-mp").value||0,it=+$("#g-int").value||0;
+  const young=y>=2010,mpLim=young?16:8,itLim=young?20:12;
+  const cat=y>=2010?"U18":(y>=2008?"U20":"U23");
+  const ok=(mp&&mp<=mpLim)||(it&&it<=itLim);let cls,msg;
+  if(!mp&&!it){cls="mid";msg="Wpisz najlepsze miejsce. Dla rocznika "+y+" próg to miejsca 1 do "+mpLim+" na mistrzostwach Polski albo 1 do "+itLim+" na zawodach międzynarodowych.";}
+  else if(!ok){cls="no";msg="Poniżej progu. Rocznik "+y+" potrzebuje miejsca 1 do "+mpLim+" na mistrzostwach Polski albo 1 do "+itLim+" na zawodach międzynarodowych z ostatnich dwóch lat. Bez tego wniosek nie jest rozpatrywany.";}
+  else{const medal=mp&&mp<=3,gold=mp===1;
+    if(gold||it){cls="ok";msg="Próg spełniony i poziom jak u stypendystów. W V edycji "+V.gold+" z "+V.n+" miało tytuł mistrza Polski, a "+V.intl+" z "+V.n+" start międzynarodowy. Tu rolka i reszta wniosku mogą przesądzić.";}
+    else if(medal){cls="mid";msg="Próg spełniony. Medal bez tytułu to dolna granica tego, co wygrywało: w V edycji "+(V.n-V.gold)+" z "+V.n+" stypendystów nie miało złota i trzech z nich miało start na mistrzostwach Europy. Rolka musi mocno pokazać postęp i pozostałe trzy kryteria.";}
+    else{cls="mid";msg="Próg formalny spełniony, ale miejsce poza podium to mniej niż u dotychczasowych stypendystów. W V edycji wszyscy mieli medal mistrzostw Polski. Szansę daje tylko wyraźny postęp, nauka i sytuacja życiowa.";}}
+  msg+=" Kategoria w 2027: "+cat+(cat==="U18"?". W VI edycji U18 dostaje opiekę specjalistów zamiast pieniędzy.":".");
+  $("#gate-out").innerHTML='<div class="gate '+cls+'">'+msg+"</div>"}
+["g-year","g-mp","g-int"].forEach(id=>$("#"+id).addEventListener("input",gate));gate();
+
+/* ---------- ocena scenariusza ---------- */
+const RULES=[
+ {k:"intro",w:1,name:"Przedstawienie: imię, wiek, klub, trener",re:[/nazywam się|jestem |mam na imię/i,/klub|trener|trenuj/i],need:2,tip:"Robi to każdy film w próbie. Zmieśćcie w 10 sekundach."},
+ {k:"ctx",w:2,name:"Wynik z kontekstem",re:[/mistrz|medal|miejsc|finał/i,/rekord|w historii|ranking|życiów|najlepszy wynik|\d+[.,:]\d+|sekund|tabel/i],need:2,tip:"Czas, rekord, miejsce w historii lub rankingu."},
+ {k:"goal",w:1.5,name:"Nazwany cel na sezon 2027",re:[/mistrzostw\w* (europy|świata)|minimum|igrzysk|2027|2028|kwalifikac/i,/cel|chcę|chciał|plan/i],need:2,tip:"Konkretna impreza albo minimum, nie ogólne marzenie."},
+ {k:"spend",w:1.5,name:"Konkretny plan wykorzystania wsparcia",multi:/fizjoterap|dietety|psycholog|oboz|obóz|zgrupowa|sprzęt|kolce|suplement|badani|dojazd|regenerac/gi,min:2,tip:"Co najmniej dwie nazwane pozycje."},
+ {k:"need",w:2,name:"Sytuacja i warunki",re:[/finans|koszt|rodzic|dojazd|dojeżdż|warunk|nie stać|pracuj|sytuacj|bieżni|hal[iaę]/i],need:1,tip:"Sytuacja ekonomiczna to jedno z czterech kryteriów."},
+ {k:"school",w:1.5,name:"Nauka",re:[/szkoł|liceum|technikum|studi|nauk|średni|matur|uczelni|klas/i],need:1,tip:"Wyniki w nauce to jedno z czterech kryteriów."},
+ {k:"beyond",w:1.5,name:"Życie poza sportem",re:[/zainteresow|wolnym czasie|lubię|pasjonuj|poza sportem|poza bieżni|wolontar|gram na|rysuj|gotow|czytam|pomagam/i],need:1,tip:"Fundacja mówi o postawie i o tym, jakimi ludźmi są stypendyści."},
+ {k:"setback",w:1,name:"Porażka lub przeszkoda i wniosek",re:[/kontuzj|porażk|nie udało|nie wyszło|trudn|problem|uraz|zabrakło|dyskwalif/i],need:1,tip:"Pokazuje determinację, o której mówi fundacja."},
+ {k:"fund",w:1,name:"Zwrot do fundacji i zakończenie",re:[/wybiegaj|fundacj|z wami|państw/i,/dziękuję|liczę|mam nadzieję/i],need:2,tip:"Nazwa programu i jedno zdanie na koniec."}
+];
+function analyze(text){const words=(text.trim().match(/[\p{L}\d]+/gu)||[]).length,sec=Math.round(words/2.3);
+  const items=RULES.map(r=>{let hit;if(r.multi){const m=new Set((text.match(r.multi)||[]).map(x=>x.toLowerCase().slice(0,5)));hit=m.size>=r.min?1:(m.size?0.5:0)}
+    else{const c=r.re.filter(x=>x.test(text)).length;hit=c>=r.need?1:(c?0.5:0)}return {r,hit}});
+  const total=RULES.reduce((a,r)=>a+r.w,0),got=items.reduce((a,i)=>a+i.r.w*i.hit,0);
+  let lenState=sec>120?"no":(sec<70?"mid":(sec>112?"mid":"ok"));
+  let score=Math.round(100*got/total);if(sec>120)score=Math.max(0,score-20);
+  return {words,sec,items,score,lenState}}
+function render(){const t=$("#script").value,box=$("#result");
+  if(!t.trim()){box.innerHTML='<h2>Wynik</h2><p class="sub">Wklej tekst i naciśnij przycisk. Możesz też wstawić przykład, żeby zobaczyć, jak działa ocena.</p>';return}
+  const a=analyze(t);const mm=Math.floor(a.sec/60)+":"+String(a.sec%60).padStart(2,"0");
+  const lenMsg={ok:"Długość w bezpiecznym zakresie.",mid:a.sec<70?"Krótko. Filmy poniżej 75 sekund w próbie pomijały plan albo cel.":"Blisko limitu. Zostaw zapas na pauzy i ujęcia bez lektora.",no:"Ponad limit 2 minut z formularza. Skróć tekst."}[a.lenState];
+  let h='<h2>Wynik</h2><div class="score"><b>'+a.score+'</b><span>na 100 punktów pokrycia kryteriów</span></div><div class="meter"><i style="width:'+a.score+'%"></i></div>';
+  h+='<div class="check '+a.lenState+'" style="margin-top:16px"><span class="ic">'+({ok:"✓",mid:"!",no:"✕"}[a.lenState])+'</span><span><b>'+a.words+" słów, około "+mm+"</b>. "+lenMsg+'</span><small>Szacunek przy tempie 2,3 słowa na sekundę. Nagranie z ujęciami bez lektora będzie dłuższe.</small></div>';
+  a.items.forEach(i=>{const cls=i.hit===1?"ok":(i.hit?"mid":"no");const k=i.r.k;
+    const stat=FEATURES.some(f=>f[0]===k)?" W próbie: zwycięzcy "+fcount("W",k)+"/"+coded("W").length+", mocni bez stypendium "+fcount("S",k)+"/"+coded("S").length+".":"";
+    h+='<div class="check '+cls+'"><span class="ic">'+({ok:"✓",mid:"!",no:"✕"}[cls])+"</span><span>"+i.r.name+(i.hit===0.5?" (częściowo)":"")+"</span><small>"+i.r.tip+stat+"</small></div>"});
+  h+='<p class="src">Ocena sprawdza, czy temat pada w tekście, na podstawie słów kluczowych. Nie ocenia jakości zdań, obrazu ani wiarygodności. Wysoki wynik nie jest prognozą decyzji rady.</p>';
+  box.innerHTML=h;try{localStorage.setItem("wwp-script",t)}catch(e){}}
+const DEMO="Cześć, nazywam się Ola, mam 17 lat i trenuję biegi średnie w klubie MKS pod okiem trenera Jana Nowaka. W tym roku zostałam mistrzynią Polski U18 na 800 metrów z czasem 2:07,41. To czwarty wynik w tabelach PZLA w mojej kategorii i poprawa życiówki o trzy sekundy w jeden sezon. Rok wcześniej nie weszłam do finału, bo przez kontuzję ścięgna straciłam pół przygotowań. Wtedy zrozumiałam, ile znaczy regeneracja i praca z fizjoterapeutą. Chodzę do drugiej klasy liceum o profilu biologiczno-chemicznym i kończę rok ze średnią 4,9. W wolnym czasie pomagam jako wolontariuszka na zawodach dla dzieci w moim klubie. W moim mieście nie ma pełnowymiarowej bieżni, więc trzy razy w tygodniu dojeżdżam 40 kilometrów na trening, a koszty zgrupowań pokrywają rodzice. Mój cel na 2027 rok to minimum na mistrzostwa Europy U20. Wsparcie programu Wybiegaj w Przyszłość przeznaczyłabym na stałą opiekę fizjoterapeuty, konsultacje z dietetykiem i dwa zgrupowania. Dziękuję i mam nadzieję, że w tę przyszłość wybiegniemy razem.";
+$("#run").onclick=render;$("#demo").onclick=()=>{$("#script").value=DEMO;render()};$("#clear").onclick=()=>{$("#script").value="";try{localStorage.removeItem("wwp-script")}catch(e){};render()};
+try{const s=localStorage.getItem("wwp-script");if(s)$("#script").value=s}catch(e){}
+render();
+
+/* ---------- plan ---------- */
+const BEATS=[
+ ["0:00–0:05","Najmocniejszy wynik na obrazie z zawodów","Jedno zdanie lektora i napis z liczbą: tytuł, czas, rok. Bez czołówki i bez muzyki przed pierwszym słowem.","W odrzuconych filmach najważniejszy wynik pada często po minucie albo po długiej liście startów regionalnych."],
+ ["0:05–0:18","Kim jestem","Imię, wiek, konkurencja, klub, trener, od kiedy trenuję. Logo lub nazwa programu na ekranie, jak w 6 z 10 zwycięskich rolek V edycji.","Rada zna kandydatów tylko z prezentacji i wyników. Tak powiedziała członkini rady przy ogłoszeniu II edycji."],
+ ["0:18–0:40","Trzy wyniki z kontekstem i postęp","Najwyżej trzy osiągnięcia, każde z miarą: czas, miejsce w tabelach, ranking, różnica do życiówki sprzed roku.","Wszystkie filmy zwycięzców ze znaną treścią podają miarę wyniku. Ujęcia ze startów ma 9 z 10 zwycięskich rolek V edycji."],
+ ["0:40–0:55","Przeszkoda i co z niej wynika","Kontuzja, nieudany start albo warunki: dojazdy, brak bieżni lub hali. Jedno zdanie o tym, co się zmieniło.","Koordynatorka wymienia postawę i determinację wśród tego, co program bierze pod uwagę."],
+ ["0:55–1:10","Szkoła i życie poza sportem","Klasa lub kierunek, średnia, jedna rzecz poza treningiem. Ujęcie spoza stadionu.","Nauka to jedno z czterech kryteriów. O nauce mówią 3 z 8 odrzuconych filmów mocnych zawodników."],
+ ["1:10–1:30","Cel na 2027 i na co pójdzie wsparcie","Nazwana impreza lub minimum. Potem trzy pozycje wydatków i zdanie, dlaczego bez wsparcia to trudne.","O sytuacji i kosztach nie mówi żaden z 8 odrzuconych filmów mocnych zawodników, a to czwarte kryterium."],
+ ["1:30–1:40","Zwrot do fundacji","Nazwa programu, podziękowanie, jedno zdanie o tym, co zawodnik da programowi. Koniec bez planszy z napisami.","Stypendyści reprezentują fundację. Zdanie o tym, jak kandydat ją pokaże, odróżnia zgłoszenie od prośby."]
+];
+BEATS.forEach(b=>{const d=el("div","beat");d.innerHTML='<div class="t">'+b[0]+'</div><div><h3>'+b[1]+'</h3><p>'+b[2]+'</p><p class="why">'+b[3]+"</p></div>";$("#beats").appendChild(d)});
+["Film trwa najwyżej 2:00. Trzy zwycięskie rolki V edycji były dłuższe, ale limit jest w formularzu.",
+ "Link jest publiczny i otwiera się bez logowania. Formularz dopuszcza YouTube, Instagram i Facebook.",
+ "Napisy na ekranie z nazwiskiem i każdą liczbą. Automatyczna transkrypcja w kilku filmach z próby nie rozpoznała nazwisk ani wyników.",
+ "Mowa nagrana mikrofonem, muzyka wyraźnie ciszej od głosu.",
+ "Każda liczba z filmu zgadza się z tabelą wyników w formularzu.",
+ "Opis rolki powtarza główną myśl w dwóch zdaniach, oznacza @wybiegajwprzyszlosc i ma hasztag #wybiegajwprzyszlosc.",
+ "Wniosek wysłany kilka dni przed 7 grudnia, żeby zdążyć poprawić link albo załącznik."
+].forEach(t=>$("#checklist").appendChild(el("li",null,t)));
+
+labelTables();
+/* ---------- nawigacja ---------- */
+const views=["wnioski","stypendysci","filmy","sprawdz","plan"];
+function show(){let v=location.hash.replace("#","");if(!views.includes(v))v="wnioski";
+  views.forEach(x=>$("#v-"+x).classList.toggle("on",x===v));
+  document.querySelectorAll("nav.lanes button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v))}
+document.querySelectorAll("nav.lanes button").forEach(b=>b.onclick=()=>{location.hash=b.dataset.v;show();window.scrollTo({top:0})});
+addEventListener("hashchange",show);show();
+})();
+</script>
+</body>
+</html>
